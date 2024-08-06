@@ -1,0 +1,24 @@
+{
+  "name": "certpalestras",
+  "version": "1.0.0",
+  "description": "Projeto de Conclusão de Curso Desenvolvimento de Sistemas da Etec Professor Camargo Aranha",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/doxz1n/CertPalestras.git"
+  },
+  "author": "Celso Machado; Henrique Sanchez; Willian da Silva",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/doxz1n/CertPalestras/issues"
+  },
+  "homepage": "https://github.com/doxz1n/CertPalestras#readme",
+  "dependencies": {
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

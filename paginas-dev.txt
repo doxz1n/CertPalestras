@@ -1,0 +1,54 @@
+/my-project
+├── /public
+│   └── /images         # Armazenar imagens públicas, como logotipos e ícones
+│   └── /certificates   # Armazenar certificados gerados (opcional)
+│   └── favicon.ico     # Ícone do site
+├── /src
+│   ├── /components     # Componentes reutilizáveis da aplicação
+│   │   ├── /common     # Componentes genéricos como Botões, Inputs, Modais
+│   │   ├── /layout     # Layouts como Header, Footer, Sidebar
+│   │   ├── /events     # Componentes específicos para eventos (Listas de eventos, Detalhes de evento)
+│   │   ├── /certificates # Componentes específicos para certificados (Listas, Detalhes)
+│   │   ├── /users      # Componentes relacionados aos usuários (Formulários de inscrição, Perfis)
+│   │   └── /attendance # Componentes para gestão de presença (Formulário de validação, Lista de presença)
+│   ├── /pages          # Páginas principais da aplicação
+│   │   ├── /api        # API Routes para backend
+│   │   │   ├── /auth   # Endpoints para autenticação (login, registro)
+│   │   │   ├── /events # Endpoints para gerenciar eventos (criar, listar, detalhes)
+│   │   │   ├── /certificates # Endpoints para certificados (gerar, enviar)
+│   │   │   └── /attendance # Endpoints para registrar e validar presenças
+│   │   │       ├── [eventId].js # Endpoint para registrar presença de um evento específico
+│   │   │       └── validate.js  # Endpoint para validar presença usando um código
+│   │   ├── /auth                # Páginas de autenticação
+│   │   │   ├── login.js         # Página de login para alunos e coordenadores
+│   │   │   └── register.js      # Página de registro para coordenadores (se necessário)
+│   │   ├── /dashboard           # Painel de controle para coordenadores
+│   │   │   ├── index.js         # Página inicial do painel de controle
+│   │   │   ├── /events          # Páginas de gerenciamento de eventos
+│   │   │   │   ├── index.js     # Listagem de eventos
+│   │   │   │   ├── [id].js      # Detalhes de um evento específico
+│   │   │   │   └── create.js    # Página para criar novos eventos
+│   │   │   ├── /certificates    # Páginas de gerenciamento de certificados
+│   │   │   │   ├── index.js     # Listagem de certificados emitidos
+│   │   │   │   ├── [id].js      # Detalhes de um certificado específico
+│   │   │   ├── /attendance      # Páginas para gerenciamento de presença
+│   │   │   │   ├── index.js     # Listagem de presenças para eventos
+│   │   │   │   ├── [eventId].js # Detalhes e controle de presença de um evento específico
+│   │   │   │   └── manual.js    # Página para registrar presença manualmente
+│   │   │   └── /users           # Páginas de gerenciamento de usuários (opcional)
+│   │   │       ├── index.js     # Listagem de usuários (alunos e coordenadores)
+│   │   │       ├── [id].js      # Detalhes de um usuário específico (perfil)
+│   │   ├── /events              # Páginas acessíveis pelos alunos
+│   │   │   ├── index.js         # Listagem de eventos para inscrição
+│   │   │   ├── [id].js          # Detalhes e inscrição em um evento específico
+│   │   ├── /certificates        # Página para alunos visualizarem seus certificados
+│   │   │   └── index.js         # Listagem de certificados do aluno
+│   │   ├── index.js             # Página inicial do site
+│   │   ├── about.js             # Página "Sobre nós"
+│   │   ├── contact.js           # Página de contato
+│   ├── /services                # Serviços para lógica de negócio, como chamadas de API
+│   │   ├── auth.js              # Serviço para autenticação
+│   │   ├── events.js            # Serviço para gerenciamento de eventos
+│   │   ├── certificates.js      # Serviço para gerenciamento de certificados
+│   │   ├── attendance.js        # Serviço para gerenciamento de presenças
+│
