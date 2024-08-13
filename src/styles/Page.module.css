@@ -1,0 +1,13 @@
+.header {
+  background-color: #00698f;
+  padding: 20px;
+  text-align: center;
+}
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
