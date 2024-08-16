@@ -42,9 +42,25 @@ export async function POST(request: Request) {
     );
   }
 }
+//Ainda necessita de Teste
 export function GET() {
-  return NextResponse.json(
-    { message: "GET NÃO IMPLEMENTADO" },
-    { status: 405 }
-  );
+	try {
+		const contatoCollection = collection(db,"contato");
+		//Eh para pegar os dados advindos dos contatos.
+		const snapshot = await getDocs(contatoCollection);
+		//Converte para um arquivo json incluindo o id.
+		const contatos = snapshot.doc.map(doc =>({
+			id: doc.id,
+			...doc.data()
+		}));
+	return NextResponse.json(contatos, {status: 200});
+	}
+	catch (error) {
+	return NextResponse.json(
+		{message: "Erro ao buscar contato."},
+		{status: 500}
+	);
+	}
+}
+
 }
