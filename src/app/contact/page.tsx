@@ -1,107 +1,65 @@
 import Head from "next/head";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import React from 'react';
 
-function Contato() {
-  const [erro, setErro] = useState("");
-  const [sucesso, setSucesso] = useState("");
-  const router = useRouter();
+//esqueleto base, alteracoes necessarias
 
-  const valoresIniciais = {
-    nome: "",
-    email: "",
-    mensagem: "",
-  };
-
-  const validacaoSchema = Yup.object().shape({
-    nome: Yup.string().required("Campo obrigatorio"),
-    email: Yup.string().email("Email invalido").required("Campo obrigatorio"),
-    mensagem: Yup.string().required("Campo obrigatorio"),
-  });
-
-  function Oi() {
-    console.log("Oi");
-  }
+export default function Contato() {
 
   return (
-    <>
-      <Head>
-        <title> CertTarefas </title>
-      </Head>
-      <Header />
-      <main className="container mx-auto p-4">
-        <h2 className="text-3x1">Entre em Contato Conosco</h2>
-        <Formik
-          initialValues={valoresIniciais}
-          validationSchema={validacaoSchema}
-          onSubmit={Oi}
-        >
-          {({ isSubmitting }) => (
-            <Form
-              className="shadow appearance-none border rounded
-			w-full py-2 px-3 text-gray-700 leading-tight
-			focus:outline-none focus:shadow-outline"
-            >
+      <div className="flex flex-col h-screen justify-between bg-blue-500">
+        <Header/>
+
+        <main className="flex-grow flex items-center justify-center">
+          <div className="bg-black text-white p-8 rounded-lg max-w-lg w-full">
+            <h1 className="text-2xl font-bold mb-6">Entre em Contato</h1>
+            <form >
               <div className="mb-4">
-                <label
-                  htmlFor="username"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
+                <label htmlFor="nome" className="block text-sm font-medium">
                   Nome
                 </label>
-                <Field
-                  type="text"
-                  name="nome"
-                  className="form-control"
-                  placeholder="Nome"
+                <input
+                    type="text"
+                    name="nome"
+                    id="nome"
+                    className="mt-1 p-2 block w-full bg-gray-800 border border-gray-700 rounded-md"
+                    required
                 />
-                <ErrorMessage name="Nome" component="text-danger" />
               </div>
-
               <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-gray-700 text-sm font-bold mb-2"
-                >
+                <label htmlFor="email" className="block text-sm font-medium">
                   Email
                 </label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="form-control"
-                  placeholder="nome@dominio.com"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-danger"
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    className="mt-1 p-2 block w-full bg-gray-800 border border-gray-700 rounded-md"
+                    required
                 />
               </div>
-
               <div className="mb-4">
-                <label htmlFor="message">Mensagem</label>
-                <Field
-                  type="text"
-                  name="mensagem"
-                  className="fom-control"
-                  placeholder="Sua mensagem"
-                />
-                <ErrorMessage
-                  name="mensagem"
-                  component="div"
-                  className="text-dange"
-                />
+                <label htmlFor="mensagem" className="block text-sm font-medium">
+                  Mensagem
+                </label>
+                <textarea
+                    name="mensagem"
+                    id="mensagem"
+                    className="mt-1 p-2 block w-full bg-gray-800 border border-gray-700 rounded-md"
+                    required
+                ></textarea>
               </div>
-            </Form>
-          )}
-        </Formik>
-      </main>
-    </>
+              <button
+                  type="submit"
+                  className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+              >
+                Enviar
+              </button>
+            </form>
+          </div>
+        </main>
+        <Footer/>
+      </div>
   );
 }
-
-export default Contato;
