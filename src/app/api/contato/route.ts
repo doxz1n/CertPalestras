@@ -1,5 +1,5 @@
 import { db } from "@/../lib/firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { collection, addDoc, Timestamp, getDocs } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
 interface ContatoFormData {
@@ -43,15 +43,15 @@ export async function POST(request: Request) {
   }
 }
 //Ainda necessita de Teste
-export function GET() {
+export async function GET() {
 	try {
-		const contatoCollection = collection(db,"contato");
+		const contatoCollection = collection(db,"contatos");
 		//Eh para pegar os dados advindos dos contatos.
 		const snapshot = await getDocs(contatoCollection);
 		//Converte para um arquivo json incluindo o id.
-		const contatos = snapshot.doc.map(doc =>({
-			id: doc.id,
-			...doc.data()
+		const contatos = snapshot.docs.map(docs  =>({
+			id: docs.id,
+			...docs.data()
 		}));
 	return NextResponse.json(contatos, {status: 200});
 	}
@@ -63,4 +63,4 @@ export function GET() {
 	}
 }
 
-}
+
