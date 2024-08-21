@@ -54,8 +54,8 @@ export default function Contato() {
       <div className="flex flex-col h-screen justify-between bg-blue-500">
         <Header/>
 
-        <main className="flex-grow flex items-center justify-center">
-          <div className="bg-black text-white p-8 rounded-lg max-w-lg w-full">
+        <main className="bg-white dark:bg-black flex items-center justify-center">
+          <div className="text-white p-8 rounded-lg max-w-lg w-full">
             <h1 className="text-2xl font-bold mb-6">Entre em Contato</h1>
             <Formik
                 initialValues={initialValues}
