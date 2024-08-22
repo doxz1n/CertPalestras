@@ -24,12 +24,15 @@ function Header() {
               </Link>
             </li>
             <li className="mr-4">
-              <Link href="/about" className="text-white hover:text-gray-200">
+              <Link
+                href="/sobre-nos"
+                className="text-white hover:text-gray-200"
+              >
                 Sobre Nós
               </Link>
             </li>
             <li>
-              <Link href="/contact" className="text-white hover:text-gray-200">
+              <Link href="/contato" className="text-white hover:text-gray-200">
                 Contato
               </Link>
             </li>
