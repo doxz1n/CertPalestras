@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         validatedUserData.email,
-        validatedUserData.senha
+        body.senha
       );
 
       const uid = userCredential.user.uid;
