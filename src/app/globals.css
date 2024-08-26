@@ -31,3 +31,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.bg {
+  background-color: rgb(8 47 73);
+}
