@@ -4,18 +4,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import userSchema from "@/utils/userSchema"
 
 // ATUALIZAR: UTILIZE O USERSCHEMA
-const validationSchema = Yup.object({
-  nome: Yup.string().required("Nome é obrigatório"),
-  email: Yup.string().email("Email inválido").required("Email é obrigatório"),
-  senha: Yup.string()
-    .min(6, "A senha deve ter no mínimo 6 caracteres")
-    .required("Senha é obrigatória"),
-  eventosInscritos: Yup.array().of(Yup.string()),
-  certificados: Yup.array().of(Yup.string()),
-});
+const validationSchema = userSchema;
 
 const initialValues = {
   nome: "",
@@ -31,7 +23,7 @@ const RegisterTeacher: React.FC = () => {
     { setSubmitting, setStatus }: any
   ) => {
     try {
-      const response = await fetch("/api/createUser", {
+      const response = await fetch("@/app/api/user/route", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
