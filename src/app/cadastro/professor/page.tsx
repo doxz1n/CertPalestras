@@ -6,8 +6,9 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import userSchema from "@/utils/userSchema"
 
-// ATUALIZAR: UTILIZE O USERSCHEMA
-const validationSchema = userSchema;
+
+const RegisterTeacher: React.FC = () => {
+  const validationSchema = userSchema;
 
 const initialValues = {
   nome: "",
@@ -16,8 +17,6 @@ const initialValues = {
   eventosInscritos: [],
   certificados: [],
 };
-
-const RegisterTeacher: React.FC = () => {
   const handleSubmit = async (
     values: typeof initialValues,
     { setSubmitting, setStatus }: any

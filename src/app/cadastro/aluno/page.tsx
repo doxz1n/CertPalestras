@@ -7,6 +7,9 @@ import Footer from "@/components/Footer";
 import userSchema from "@/utils/userSchema"
 
 
+
+const RegisterStudent: React.FC = () => {
+  
 const validationSchema = userSchema;
 
 const initialValues = {
@@ -15,14 +18,12 @@ const initialValues = {
   eventosInscritos: [],
   certificados: [],
 };
-
-const RegisterStudent: React.FC = () => {
   const handleSubmit = async (
     values: typeof initialValues,
     { setSubmitting, setStatus }: any
   ) => {
     try {
-      const response = await fetch("@/app/api/user/register", {
+      const response = await fetch("/api/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
