@@ -3,7 +3,7 @@ import Image from "next/image";
 import Logo from "../../public/logo.png";
 function Header() {
   return (
-    <header className="bg-blue-500 py-4">
+    <header className="bg-blue-500 py-4 mb-1">
       <div className="container mx-auto p-4 flex justify-between items-center">
         <div className="logo">
           <Link href="/">
