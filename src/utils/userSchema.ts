@@ -20,7 +20,8 @@ export interface Aluno {
 
 export interface Coordenador {
     email: string;
-        nome: string;
+    nome: string;
+    cpf: string;
     tipo: "coordenador";
     senha: string;
     eventosInscritos: EventoInscrito[];

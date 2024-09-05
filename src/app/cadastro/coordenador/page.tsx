@@ -1,18 +1,20 @@
 "use client";
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import coordinatorSchema from "@/utils/coordinatorSchema"
-
+import coordenadorSchema from "@/utils/coordenadorSchema"
+import { Coordenador } from "@/utils/userSchema";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const RegisterTeacher: React.FC = () => {
-  const validationSchema = coordinatorSchema;
+  const validationSchema = coordenadorSchema;
 
-const initialValues = {
+const initialValues:Coordenador = {
   nome: "",
   email: "",
+  tipo: "coordenador",
+  cpf: "",
   senha: "",
   eventosInscritos: [],
   certificados: [],
@@ -22,12 +24,12 @@ const initialValues = {
     { setSubmitting, setStatus }: any
   ) => {
     try {
-      const response = await fetch("@/app/api/user/route", {
+      const response = await fetch("/api/user", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...values, tipo: "coordenador" }),
+        body: JSON.stringify(values),
       });
 
       const result = await response.json();
@@ -94,6 +96,24 @@ const initialValues = {
                   />
                 </div>
 
+                <div className="mb-4">
+                  <label
+                    htmlFor="cpf"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    CPF (Somente Numeros)
+                  </label>
+                  <Field
+                    name="cpf"
+                    type="text"
+                    className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <ErrorMessage
+                    name="cpf"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
                 <div className="mb-4">
                   <label
                     htmlFor="senha"

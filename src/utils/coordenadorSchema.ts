@@ -2,12 +2,9 @@ import * as Yup from "yup";
 import {Coordenador} from "@/utils/userSchema";
 
 // @ts-ignore
-const coordinatorSchema: Yup.ObjectSchema<Coordenador> = Yup.object().shape({
+const coordenadorSchema: Yup.ObjectSchema<Coordenador> = Yup.object().shape({
     email: Yup.string().email().required(),
     nome: Yup.string().required(),
-    tipo: Yup.mixed<"aluno" | "coordenador">()
-        .oneOf(["aluno", "coordenador"])
-        .required(),
     senha: Yup.string().required(),
     eventosInscritos: Yup.array()
         .of(
@@ -27,4 +24,4 @@ const coordinatorSchema: Yup.ObjectSchema<Coordenador> = Yup.object().shape({
         .required(),
 });
 
-export default coordinatorSchema;
+export default coordenadorSchema;

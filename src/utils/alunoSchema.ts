@@ -5,9 +5,6 @@ import {Aluno} from "@/utils/userSchema";
 const alunoSchema: Yup.ObjectSchema<Aluno> = Yup.object().shape({
     email: Yup.string().email().required(),
     nome: Yup.string().required(),
-    tipo: Yup.mixed<"aluno" | "coordenador">()
-        .oneOf(["aluno", "coordenador"])
-        .required(),
     cpf: Yup.string().required(),
     eventosInscritos: Yup.array()
         .of(

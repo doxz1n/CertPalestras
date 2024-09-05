@@ -5,22 +5,21 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import alunoSchema from "@/utils/alunoSchema"
-
-
-
+import { Aluno } from "@/utils/userSchema";
 const RegisterStudent: React.FC = () => {
   
 const validationSchema = alunoSchema;
 
-const initialValues = {
+const initialValues:Aluno = {
   nome: "",
   email: "",
   cpf: "",
+  tipo: "aluno",
   eventosInscritos: [],
   certificados: [],
 };
   const handleSubmit = async (
-    values: typeof initialValues,
+    values: Aluno,
     { setSubmitting, setStatus }: any
   ) => {
     try {
@@ -29,7 +28,7 @@ const initialValues = {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...values, tipo: "aluno" }),
+        body: JSON.stringify(values),
       });
 
       const result = await response.json();

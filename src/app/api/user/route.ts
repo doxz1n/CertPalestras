@@ -2,7 +2,7 @@ import { db } from "@/../lib/firebase";
 import { CreateAuth } from "@/utils/Auth";
 import alunoSchema from "@/utils/alunoSchema";
 import {Aluno} from "@/utils/userSchema";
-import coordinatorSchema from "@/utils/coordinatorSchema";
+import coordenadorSchema from "@/utils/coordenadorSchema";
 import {Coordenador} from "@/utils/userSchema";
 import { collection, addDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
@@ -12,16 +12,12 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    // Validação dos dados recebidos com Yup
-    const validatealunoData: Aluno = await alunoSchema.validate(body, {
-      abortEarly: false,
-    });
-    const validatecoordenador: Coordenador = await coordinatorSchema.validate(body, {
-      "abortEarly": false,
-    });
-
     //Caso o tipo for coordenador
-    if (validatecoordenador.tipo === "coordenador") {
+    if (body.tipo === "coordenador") {
+      // Validação dos dados recebidos com Yup
+      const validatecoordenador: Coordenador = await coordenadorSchema.validate(body, {
+        "abortEarly": false,
+      });
       //Criação do coordenador no Firebase Auth usando email e senha
       const uid = await CreateAuth(validatecoordenador.email, body.senha);
 
@@ -41,7 +37,11 @@ export async function POST(request: Request) {
     }
     //Fim do bloco
     //Caso o tipo for aluno
-    else if (validatealunoData.tipo === "aluno") {
+    else if (body.tipo === "aluno") {
+      // Validação dos dados recebidos com Yup
+      const validatealunoData: Aluno = await alunoSchema.validate(body, {
+        abortEarly: false,
+      });
       await addDoc(collection(db, "alunos"), {
         nome: validatealunoData.nome,
         email: validatealunoData.email,
