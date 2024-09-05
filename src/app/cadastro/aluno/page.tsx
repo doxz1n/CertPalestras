@@ -57,65 +57,83 @@ const initialValues = {
             onSubmit={handleSubmit}
           >
             {({ isSubmitting, status }) => (
-              <Form>
-                <div className="mb-4">
-                  <label
-                    htmlFor="nome"
-                    className="block text-sm font-medium text-gray-700"
+                <Form>
+                  <div className="mb-4">
+                    <label
+                        htmlFor="nome"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                      Nome
+                    </label>
+                    <Field
+                        name="nome"
+                        type="text"
+                        className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <ErrorMessage
+                        name="nome"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                      Email
+                    </label>
+                    <Field
+                        name="email"
+                        type="email"
+                        className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <ErrorMessage
+                        name="email"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                        htmlFor="cpf"
+                        className="block text-sm font-medium text-gray-700"
+                    >
+                      CPF(APENAS NUMEROS)
+                    </label>
+                    <Field
+                        name="cpf"
+                        type="text"
+                        className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <ErrorMessage
+                        name="cpf"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                    />
+                  </div>
+
+                  <button
+                      type="submit"
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+                      disabled={isSubmitting}
                   >
-                    Nome
-                  </label>
-                  <Field
-                    name="nome"
-                    type="text"
-                    className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <ErrorMessage
-                    name="nome"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
+                    {isSubmitting ? "Enviando..." : "Cadastrar"}
+                  </button>
 
-                <div className="mb-4">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Email
-                  </label>
-                  <Field
-                    name="email"
-                    type="email"
-                    className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Enviando..." : "Cadastrar"}
-                </button>
-
-                {status && status.success && (
-                  <div className="text-green-500 mt-4">{status.success}</div>
-                )}
-                {status && status.error && (
-                  <div className="text-red-500 mt-4">{status.error}</div>
-                )}
-              </Form>
+                  {status && status.success && (
+                      <div className="text-green-500 mt-4">{status.success}</div>
+                  )}
+                  {status && status.error && (
+                      <div className="text-red-500 mt-4">{status.error}</div>
+                  )}
+                </Form>
             )}
           </Formik>
         </div>
       </main>
-      <Footer />
+      <Footer/>
     </div>
   );
 };
