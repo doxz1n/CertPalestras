@@ -4,11 +4,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import userSchema from "@/utils/userSchema"
+import coordinatorSchema from "@/utils/coordinatorSchema"
 
 
 const RegisterTeacher: React.FC = () => {
-  const validationSchema = userSchema;
+  const validationSchema = coordinatorSchema;
 
 const initialValues = {
   nome: "",

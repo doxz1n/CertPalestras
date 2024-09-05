@@ -4,17 +4,18 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import userSchema from "@/utils/userSchema"
+import alunoSchema from "@/utils/alunoSchema"
 
 
 
 const RegisterStudent: React.FC = () => {
   
-const validationSchema = userSchema;
+const validationSchema = alunoSchema;
 
 const initialValues = {
   nome: "",
   email: "",
+  cpf: "",
   eventosInscritos: [],
   certificados: [],
 };

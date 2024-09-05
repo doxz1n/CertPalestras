@@ -1,6 +1,9 @@
 import { db } from "@/../lib/firebase";
 import { CreateAuth } from "@/utils/Auth";
-import userSchema, { Usuario } from "@/utils/userSchema";
+import alunoSchema from "@/utils/alunoSchema";
+import {Aluno} from "@/utils/userSchema";
+import coordinatorSchema from "@/utils/coordinatorSchema";
+import {Coordenador} from "@/utils/userSchema";
 import { collection, addDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import * as Yup from "yup";
@@ -10,21 +13,25 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Validação dos dados recebidos com Yup
-    const validatedUserData: Usuario = await userSchema.validate(body, {
+    const validatealunoData: Aluno = await alunoSchema.validate(body, {
       abortEarly: false,
+    });
+    const validatecoordenador: Coordenador = await coordinatorSchema.validate(body, {
+      "abortEarly": false,
     });
 
     //Caso o tipo for coordenador
-    if (validatedUserData.tipo === "coordenador") {
+    if (validatecoordenador.tipo === "coordenador") {
       //Criação do coordenador no Firebase Auth usando email e senha
-      const uid = await CreateAuth(validatedUserData.email, body.senha);
+      const uid = await CreateAuth(validatecoordenador.email, body.senha);
 
       await addDoc(collection(db, "coordenadores"), {
         uid,
-        email: validatedUserData.email,
-        nome: validatedUserData.nome,
-        eventosInscritos: validatedUserData.eventosInscritos,
-        certificados: validatedUserData.certificados,
+        email: validatecoordenador.email,
+        nome: validatecoordenador.nome,
+        senha: validatecoordenador.senha,
+        eventosInscritos: validatecoordenador.eventosInscritos,
+        certificados: validatecoordenador.certificados,
       });
 
       return NextResponse.json(
@@ -34,12 +41,13 @@ export async function POST(request: Request) {
     }
     //Fim do bloco
     //Caso o tipo for aluno
-    else if (validatedUserData.tipo === "aluno") {
+    else if (validatealunoData.tipo === "aluno") {
       await addDoc(collection(db, "alunos"), {
-        email: validatedUserData.email,
-        nome: validatedUserData.nome,
-        eventosInscritos: validatedUserData.eventosInscritos,
-        certificados: validatedUserData.certificados,
+        nome: validatealunoData.nome,
+        email: validatealunoData.email,
+        cpf: validatealunoData.cpf,
+        eventosInscritos: validatealunoData.eventosInscritos,
+        certificados: validatealunoData.certificados,
       });
 
       return NextResponse.json(
