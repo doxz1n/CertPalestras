@@ -31,9 +31,14 @@ function Header() {
                 Sobre Nós
               </Link>
             </li>
-            <li>
+            <li className="mr-4">
               <Link href="/contato" className="text-white hover:text-gray-200">
                 Contato
+              </Link>
+            </li>
+            <li>
+              <Link href="/criar-evento" className="text-white hover:text-gray-200">
+                Criar evento
               </Link>
             </li>
           </ul>
