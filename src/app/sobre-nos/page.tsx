@@ -1,4 +1,4 @@
-export default function About() {
+function About() {
   return (
     <main className="container mx-auto p-4">
       <h2 className="text-3xl mb-4">Sobre Nós</h2>
@@ -83,3 +83,7 @@ export default function About() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default About;
