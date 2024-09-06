@@ -3,6 +3,7 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import eventoSchema, { Evento } from "@/utils/eventoSchema";
+import moment from "moment";
 
 export default function Page() {
   const initialValues: Evento = {
@@ -11,6 +12,46 @@ export default function Page() {
     dataFim: "",
     nome: "",
     descricao: "",
+  };
+
+  const dateFormat = "DD/MM/YYYY HH:mm"; // Formato esperado para as datas
+
+  const handleSubmit = async (
+    values: Evento,
+    { setSubmitting, setStatus }: any
+  ) => {
+    try {
+      // Conversão de data
+      const dataInicioFormatada = moment(values.dataInicio).format(
+        dateFormat
+      );
+      const dataFimFormatada = moment(values.dataFim).format(dateFormat);
+      const valoresConvertidos = {
+        ...values,
+        dataInicio: dataInicioFormatada,
+        dataFim: dataFimFormatada,
+      };
+      //Envio
+      const response = await fetch("/api/event", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(valoresConvertidos),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setStatus({ success: "Evento criado com sucesso!" }); // Correção
+      } else {
+        setStatus({ error: result.message || "Erro ao criar evento!" });
+      }
+    } catch (error) {
+      setStatus({ error: "Erro de comunicação com o servidor!" });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -22,17 +63,12 @@ export default function Page() {
         <Formik
           initialValues={initialValues}
           validationSchema={eventoSchema}
-          onSubmit={(values) => {
-            console.log(values);
-          }}
+          onSubmit={handleSubmit}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, status }) => (
             <Form className="space-y-4">
               <div>
-                <label
-                  htmlFor="nome"
-                  className="block text-sm font-medium"
-                >
+                <label htmlFor="nome" className="block text-sm font-medium">
                   Nome
                 </label>
                 <Field
@@ -49,10 +85,7 @@ export default function Page() {
               </div>
 
               <div>
-                <label
-                  htmlFor="vagas"
-                  className="block text-sm font-medium"
-                >
+                <label htmlFor="vagas" className="block text-sm font-medium">
                   Vagas
                 </label>
                 <Field
@@ -69,10 +102,7 @@ export default function Page() {
               </div>
 
               <div>
-                <label
-                  htmlFor="dataInicio"
-                  className="block text-sm font-medium"
-                >
+                <label htmlFor="dataInicio" className="block text-sm font-medium">
                   Data de Início
                 </label>
                 <Field
@@ -89,10 +119,7 @@ export default function Page() {
               </div>
 
               <div>
-                <label
-                  htmlFor="dataFim"
-                  className="block text-sm font-medium"
-                >
+                <label htmlFor="dataFim" className="block text-sm font-medium">
                   Data de Fim
                 </label>
                 <Field
@@ -109,10 +136,7 @@ export default function Page() {
               </div>
 
               <div>
-                <label
-                  htmlFor="descricao"
-                  className="block text-sm font-medium"
-                >
+                <label htmlFor="descricao" className="block text-sm font-medium">
                   Descrição
                 </label>
                 <Field
@@ -128,6 +152,13 @@ export default function Page() {
                   className="text-red-500 text-sm"
                 />
               </div>
+
+              {status && status.success && (
+                <div className="text-green-500 text-sm">{status.success}</div>
+              )}
+              {status && status.error && (
+                <div className="text-red-500 text-sm">{status.error}</div>
+              )}
 
               <div>
                 <button
