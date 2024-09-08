@@ -98,24 +98,6 @@ const initialValues:Coordenador = {
 
                 <div className="mb-4">
                   <label
-                    htmlFor="cpf"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    CPF (Somente Numeros)
-                  </label>
-                  <Field
-                    name="cpf"
-                    type="text"
-                    className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                  />
-                  <ErrorMessage
-                    name="cpf"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-                <div className="mb-4">
-                  <label
                     htmlFor="senha"
                     className="block text-sm font-medium text-gray-700"
                   >
