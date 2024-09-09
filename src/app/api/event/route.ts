@@ -1,8 +1,10 @@
 import { db } from "../../../../lib/firebase";
 import eventoSchema, { Evento } from "@/utils/eventoSchema";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import * as Yup from "yup";
+import moment from "moment";
+
 
 export async function POST(request: Request) {
   try {
@@ -12,12 +14,14 @@ export async function POST(request: Request) {
       abortEarly: false,
     });
     //Criar evento
+
+    const dataInicioISO = moment(validateData.dataInicio, "DD/MM/YYYY HH:mm").toISOString();
+    const dataFimISO = moment(validateData.dataFim, "DD/MM/YYYY HH:mm").toISOString();
+
     await addDoc(collection(db, "eventos"), {
-      nome: validateData.nome,
-      dataInicio: validateData.dataInicio,
-      dataFim: validateData.dataFim,
-      descricao: validateData.descricao,
-      vagas: validateData.vagas,
+      ...validateData,
+      dataInicio: dataInicioISO,
+      dataFim: dataFimISO,
     });
 
     return NextResponse.json(
@@ -33,6 +37,29 @@ export async function POST(request: Request) {
     console.error("Erro ao criar usuário:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    const eventosRef = collection(db, "eventos");
+    const hoje = new Date;
+    const q = query(eventosRef, where("dataFim", ">", hoje.toISOString()));
+
+    const querySnapshot = await getDocs(q);
+
+    const eventosFuturos = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return NextResponse.json({ eventos: eventosFuturos }, { status: 200 });
+  } catch (error) {
+    console.error("Erro ao buscar eventos futuros:", error);
+    return NextResponse.json(
+      { error: "Erro ao buscar eventos futuros" },
       { status: 500 }
     );
   }
