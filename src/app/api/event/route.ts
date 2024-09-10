@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import * as Yup from "yup";
 import moment from "moment";
 
+const eventosCollection = collection(db, "eventos"); //Coleção Eventos
 
 export async function POST(request: Request) {
   try {
@@ -15,10 +16,16 @@ export async function POST(request: Request) {
     });
     //Criar evento
 
-    const dataInicioISO = moment(validateData.dataInicio, "DD/MM/YYYY HH:mm").toISOString();
-    const dataFimISO = moment(validateData.dataFim, "DD/MM/YYYY HH:mm").toISOString();
+    const dataInicioISO = moment(
+      validateData.dataInicio,
+      "DD/MM/YYYY HH:mm"
+    ).toISOString();
+    const dataFimISO = moment(
+      validateData.dataFim,
+      "DD/MM/YYYY HH:mm"
+    ).toISOString();
 
-    await addDoc(collection(db, "eventos"), {
+    await addDoc(eventosCollection, {
       ...validateData,
       dataInicio: dataInicioISO,
       dataFim: dataFimISO,
@@ -44,22 +51,24 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const eventosRef = collection(db, "eventos");
-    const hoje = new Date;
-    const q = query(eventosRef, where("dataFim", ">", hoje.toISOString()));
+    // Busca todos os documentos na coleção "eventos"
+    const querySnapshot = await getDocs(eventosCollection);
 
-    const querySnapshot = await getDocs(q);
-
-    const eventosFuturos = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
+    // Mapeia os dados dos documentos para um array de eventos
+    const eventos = querySnapshot.docs.map((doc) => ({
+      id: doc.id, // Adiciona o ID do documento
+      ...doc.data(), // Inclui os dados do documento
     }));
 
-    return NextResponse.json({ eventos: eventosFuturos }, { status: 200 });
+    // Retorna todos os eventos em formato JSON
+    return NextResponse.json({ eventos }, { status: 200 });
   } catch (error) {
-    console.error("Erro ao buscar eventos futuros:", error);
+    // Captura e exibe o erro no console
+    console.error("Erro ao buscar eventos:", error);
+
+    // Retorna uma resposta de erro
     return NextResponse.json(
-      { error: "Erro ao buscar eventos futuros" },
+      { error: "Erro ao buscar eventos" },
       { status: 500 }
     );
   }
