@@ -9,17 +9,13 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 
 
 
-const LoginTeacher: React.FC = () => {
-    const validationSchema = coordenadorSchema;
 
-    const initialValues:Coordenador = {
-        nome: "",
-        email: "",
-        tipo: "coordenador",
-        cpf: "",
+const LoginTeacher: React.FC = () => {
+    const validationSchema = "" // Criar Schema de validação do email e senha
+
+    const initialValues = {
         senha: "",
-        eventosInscritos: [],
-        certificados: [],
+        email: ""
     };
 
     const handleSubmit = async (
@@ -27,8 +23,8 @@ const LoginTeacher: React.FC = () => {
         {setSubmitting, setStatus}:any
     ) => {
         try {
-            const response = await fetch("/api/user", {
-                method: "GET",
+            const response = await fetch("/api/user/sign-on", {
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },

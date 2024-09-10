@@ -24,7 +24,7 @@ const initialValues:Coordenador = {
     { setSubmitting, setStatus }: any
   ) => {
     try {
-      const response = await fetch("/api/user", {
+      const response = await fetch("/api/user/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

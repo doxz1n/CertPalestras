@@ -1,13 +1,12 @@
 import { db } from "@/../lib/firebase";
-import { CreateAuth, LoginAuth } from "@/utils/Auth";
+import { CreateAuth } from "@/utils/Auth";
 import alunoSchema from "@/utils/alunoSchema";
 import {Aluno} from "@/utils/userSchema";
 import coordenadorSchema from "@/utils/coordenadorSchema";
 import {Coordenador} from "@/utils/userSchema";
-import { collection, addDoc, getDoc, doc } from "firebase/firestore";
+import { collection, addDoc} from "firebase/firestore";
 import { NextResponse } from "next/server";
 import * as Yup from "yup";
-import {useId} from "react";
 
 export async function POST(request: Request) {
   try {
@@ -65,7 +64,7 @@ export async function POST(request: Request) {
       );
     }
     //Fim do Bloco
-  } catch (error) {
+  } catch (error: any) {
     //Verifica erros de servidor
     // Verifica se o erro é uma instância de Yup.ValidationError, que ocorre se a validação dos dados falhar.
     if (error instanceof Yup.ValidationError) {
@@ -79,39 +78,5 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
-  }
-}
-
-export async function GET(request: Request) {
-  try {
-    const body = await request.json();
-      const validateCoordenador: Coordenador = await coordenadorSchema.validate(body, {
-        abortEarly: false,
-      });
-
-      const uid = await  LoginAuth(validateCoordenador.email, body.senha);
-
-      const coordenadorDocRef = doc(db, "coordenadores", uid);
-
-      const coordenadorDoc = await getDoc(coordenadorDocRef);
-      if (!coordenadorDoc.exists()) {
-        return NextResponse.json(
-            {message: "Usuario nao existe!" },
-            {status: 404}
-        );
-      }else{
-      return NextResponse.json(
-          {message: "Login realizado com sucesso!" },
-          { status: 200 }
-      );}
-    } catch (error){
-    if(error instanceof Yup.ValidationError){
-      return NextResponse.json({error: error.errors}, { status: 400 });
-    }else{
-    console.error("Erro ao autenticar o usuario", error);
-    return NextResponse.json(
-        {error: "Erro ao autenticar o usuario, verifique suas credenciais"},
-        { status: 401 }
-    );}
   }
 }
