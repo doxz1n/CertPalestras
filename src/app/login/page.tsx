@@ -103,7 +103,7 @@ const LoginTeacher: React.FC = () => {
                                     className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
                                     disabled={isSubmitting}
                                 >
-                                    {isSubmitting ? "Enviando..." : "Cadastrar"}
+                                    {isSubmitting ? "Enviando..." : "Login"}
                                 </button>
 
                                 {status && status.success && (

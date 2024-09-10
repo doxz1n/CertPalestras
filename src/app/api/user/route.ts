@@ -4,7 +4,7 @@ import alunoSchema from "@/utils/alunoSchema";
 import {Aluno} from "@/utils/userSchema";
 import coordenadorSchema from "@/utils/coordenadorSchema";
 import {Coordenador} from "@/utils/userSchema";
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { collection, addDoc, getDoc, doc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import * as Yup from "yup";
 import {useId} from "react";
@@ -91,23 +91,27 @@ export async function GET(request: Request) {
 
       const uid = await  LoginAuth(validateCoordenador.email, body.senha);
 
-      await setDoc(doc(db, "coordenadores", uid),{
-        uid,
-        email: validateCoordenador.email,
-      });
+      const coordenadorDocRef = doc(db, "coordenadores", uid);
 
+      const coordenadorDoc = await getDoc(coordenadorDocRef);
+      if (!coordenadorDoc.exists()) {
+        return NextResponse.json(
+            {message: "Usuario nao existe!" },
+            {status: 404}
+        );
+      }else{
       return NextResponse.json(
           {message: "Login realizado com sucesso!" },
           { status: 200 }
-      );
+      );}
     } catch (error){
     if(error instanceof Yup.ValidationError){
       return NextResponse.json({error: error.errors}, { status: 400 });
-    }
+    }else{
     console.error("Erro ao autenticar o usuario", error);
     return NextResponse.json(
         {error: "Erro ao autenticar o usuario, verifique suas credenciais"},
         { status: 401 }
-    );
+    );}
   }
 }
