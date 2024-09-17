@@ -1,3 +1,5 @@
+import EventosFuturos from "@/components/EventosFuturos";
+
 function Home() {
   return (
     <main className="container mx-auto p-4">
@@ -8,6 +10,7 @@ function Home() {
       <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
         Começar
       </button>
+      <EventosFuturos />
     </main>
   );
 }

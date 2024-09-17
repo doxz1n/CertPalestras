@@ -2,6 +2,7 @@ import * as Yup from "yup";
 import moment from "moment";
 
 export interface Evento {
+  id?: string // O ID é opcional, pois ele pode ser gerado automaticamente
   vagas: number;
   dataInicio: string; // Usando string para armazenar a data formatada
   dataFim: string;
@@ -11,6 +12,7 @@ export interface Evento {
 
 // Validação do schema com Moment.js para garantir o formato correto
 const eventoSchema: Yup.ObjectSchema<Evento> = Yup.object().shape({
+  id: Yup.string().optional(), // 'id' é opcional
   vagas: Yup.number().required("Número de vagas é obrigatório"),
   dataInicio: Yup.string()
     .required("Data de início é obrigatória")

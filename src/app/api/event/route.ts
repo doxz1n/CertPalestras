@@ -1,8 +1,11 @@
 import { db } from "../../../../lib/firebase";
 import eventoSchema, { Evento } from "@/utils/eventoSchema";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import * as Yup from "yup";
+import moment from "moment";
+
+const eventosCollection = collection(db, "eventos"); //Coleção Eventos
 
 export async function POST(request: Request) {
   try {
@@ -12,12 +15,20 @@ export async function POST(request: Request) {
       abortEarly: false,
     });
     //Criar evento
-    await addDoc(collection(db, "eventos"), {
-      nome: validateData.nome,
-      dataInicio: validateData.dataInicio,
-      dataFim: validateData.dataFim,
-      descricao: validateData.descricao,
-      vagas: validateData.vagas,
+
+    const dataInicioISO = moment(
+      validateData.dataInicio,
+      "DD/MM/YYYY HH:mm"
+    ).toISOString();
+    const dataFimISO = moment(
+      validateData.dataFim,
+      "DD/MM/YYYY HH:mm"
+    ).toISOString();
+
+    await addDoc(eventosCollection, {
+      ...validateData,
+      dataInicio: dataInicioISO,
+      dataFim: dataFimISO,
     });
 
     return NextResponse.json(
@@ -33,6 +44,31 @@ export async function POST(request: Request) {
     console.error("Erro ao criar usuário:", error);
     return NextResponse.json(
       { error: "Erro interno do servidor" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET() {
+  try {
+    // Busca todos os documentos na coleção "eventos"
+    const querySnapshot = await getDocs(eventosCollection);
+
+    // Mapeia os dados dos documentos para um array de eventos
+    const eventos = querySnapshot.docs.map((doc) => ({
+      id: doc.id, // Adiciona o ID do documento
+      ...doc.data(), // Inclui os dados do documento
+    }));
+
+    // Retorna todos os eventos em formato JSON
+    return NextResponse.json({ eventos }, { status: 200 });
+  } catch (error) {
+    // Captura e exibe o erro no console
+    console.error("Erro ao buscar eventos:", error);
+
+    // Retorna uma resposta de erro
+    return NextResponse.json(
+      { error: "Erro ao buscar eventos" },
       { status: 500 }
     );
   }
