@@ -81,9 +81,10 @@ export default function FutureEvents() {
       {eventos.length === 0 ? (
         <p>Nenhum evento futuro encontrado.</p>
       ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <ul className="space-y-4">
           {eventos.map((evento) => (
-            <li key={evento.id} className="border p-4 rounded-lg">
+            <li key={evento.id} className="bg-gray-100 p-6 rounded-lg shadow-md border p-4 rounded-lg">
               <h3 className="text-xl font-semibold">{evento.nome}</h3>
               <p>{evento.descricao}</p>
               <p>
@@ -98,6 +99,7 @@ export default function FutureEvents() {
             </li>
           ))}
         </ul>
+        </div>
       )}
     </div>
   );
