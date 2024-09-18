@@ -1,6 +1,6 @@
 "use client";
 
-import {useRouter} from "next/router";
+import {useRouter} from "next/navigation";
 import {useEffect, useState} from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -27,7 +27,7 @@ export default function Page() {
             <div className="flex flex-col h-screen justify-between bg-blue-500">
                 <Header/>
                 <main className="bg-white dark:bg-black flex items-center justify-center flex-grow">
-
+                    <h1> Oi mundo</h1>
                 </main>
                 <Footer/>
             </div>

@@ -1,35 +1,30 @@
-import { db } from "@/../lib/firebase";
-import {LoginAuth } from "@/utils/Auth";
-import coordenadorSchema from "@/utils/coordenadorSchema";
-import {Coordenador} from "@/utils/userSchema";
-import { getDocs, query, where, collection } from "firebase/firestore";
+// app/api/login/route.js
 import { NextResponse } from "next/server";
-import * as Yup from "yup";
+import { auth } from "../../../../../lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
-//Formatar código
-export async function POST (request: Request) {
-    try {
-      const body = await request.json();
-  
-        const uid = await  LoginAuth(body.email, body.senha);
-        
-        const coordenadorCollection = collection(db, "coordenadores")
-        const q = query(coordenadorCollection, where ("uid", "==", uid) );
-  
-        const coordenadorDoc = await getDocs(q);
-        return NextResponse.json(
-            {message: "Login realizado com sucesso!" },
-            { status: 200 }
-        );
+export async function POST(request: Request) {
+  const { email, senha } = await request.json();
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      senha
+    );
+    const user = userCredential.user;
 
-      } catch (error){
-      if(error instanceof Yup.ValidationError){
-        return NextResponse.json({error: error.errors}, { status: 400 });
-      }else{
-      console.error("Erro ao autenticar o usuario", error);
-      return NextResponse.json(
-          {error: "Erro ao autenticar o usuario, verifique suas credenciais"},
-          { status: 401 }
-      );}
-    }
+    // Retorne informações do usuário (exceto a senha)
+    return NextResponse.json(
+      {
+        uid: user.uid,
+        email: user.email,
+      },
+      { status: 200 }
+    );
+  } catch (error:any) {
+    console.error("Erro ao fazer login:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 401,
+    });
   }
+}
