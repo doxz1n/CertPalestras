@@ -1,13 +1,9 @@
 "use client";
 
 import React from "react";
-import coordenadorSchema from "@/utils/coordenadorSchema";
-import {Coordenador} from "@/utils/userSchema";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-
-
 
 
 const LoginTeacher: React.FC = () => {
