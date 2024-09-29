@@ -1,8 +1,9 @@
 import * as Yup from "yup";
 
 // Define a interface para o usuário
-interface EventoInscrito {
+export interface EventoInscrito {
   eventoId: string;
+  dataInscricao: string;
   presencaValidada: boolean;
 }
 
@@ -32,6 +33,7 @@ const userSchema: Yup.ObjectSchema<Usuario> = Yup.object().shape({
       Yup.object().shape({
         eventoId: Yup.string().required(),
         presencaValidada: Yup.boolean().required(),
+        dataInscricao: Yup.string().required(),
       })
     )
     .required(),
