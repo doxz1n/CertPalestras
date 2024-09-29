@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import Header from "@/components/Header";
@@ -30,10 +30,10 @@ const LoginTeacher: React.FC = () => {
   // Função de submit do formulário
   const login = async (values: { email: string; senha: string }) => {
     const { email, senha } = values;
-    const response = await fetch('/api/user/sign-on', {
-      method: 'POST',
+    const response = await fetch("/api/coordinator/sign-on", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, senha }),
     });
@@ -46,11 +46,11 @@ const LoginTeacher: React.FC = () => {
     const userData = await response.json();
 
     // Armazena o UID no localStorage
-    console.log(userData.uid)
-    localStorage.setItem('uid', userData.uid);
+    console.log(userData.uid);
+    localStorage.setItem("uid", userData.uid);
 
     // Redireciona após login bem-sucedido
-    router.push('/painel');
+    router.push("/painel");
   };
 
   return (

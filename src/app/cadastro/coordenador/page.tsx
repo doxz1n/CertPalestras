@@ -2,29 +2,26 @@
 
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import coordenadorSchema from "@/utils/coordenadorSchema"
-import { Coordenador } from "@/utils/userSchema";
+import { Coordenador, coordenadorSchema } from "@/utils/coordenadorSchema";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const RegisterTeacher: React.FC = () => {
+const RegistroCoordenador: React.FC = () => {
   const validationSchema = coordenadorSchema;
 
-const initialValues:Coordenador = {
-  nome: "",
-  email: "",
-  tipo: "coordenador",
-  cpf: "",
-  senha: "",
-  eventosInscritos: [],
-  certificados: [],
-};
+  const initialValues: Coordenador = {
+    nome: "",
+    email: "",
+    cpf: "",
+    senha: "",
+  };
+
   const handleSubmit = async (
     values: typeof initialValues,
     { setSubmitting, setStatus }: any
   ) => {
     try {
-      const response = await fetch("/api/user/sign-up", {
+      const response = await fetch("/api/coordinator/sign-up", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,6 +95,25 @@ const initialValues:Coordenador = {
 
                 <div className="mb-4">
                   <label
+                    htmlFor="cpf"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    CPF
+                  </label>
+                  <Field
+                    name="cpf"
+                    type="text"
+                    className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  />
+                  <ErrorMessage
+                    name="cpf"
+                    component="div"
+                    className="text-red-500 text-sm mt-1"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <label
                     htmlFor="senha"
                     className="block text-sm font-medium text-gray-700"
                   >
@@ -139,4 +155,4 @@ const initialValues:Coordenador = {
   );
 };
 
-export default RegisterTeacher;
+export default RegistroCoordenador;
