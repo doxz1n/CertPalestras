@@ -40,3 +40,32 @@ export const buscaCpf = async (cpf: string): Promise<boolean> => {
     return false;
   }
 };
+
+export const verificaInscricao = async (
+  cpf: string,
+  eventoId: string
+): Promise<boolean> => {
+  try {
+    // Referência ao documento do evento
+    const eventoRef = doc(db, "eventos", eventoId);
+
+    // Obtém o documento do evento
+    const eventoDoc = await getDoc(eventoRef);
+
+    // Verifica se o documento existe
+    if (!eventoDoc.exists()) {
+      throw new Error("Evento não encontrado");
+    }
+
+    // Obtém os dados do evento
+    const eventoData = eventoDoc.data();
+
+    // Verifica se o CPF está na lista de inscritos
+    const inscritos: { nome: string; cpf: string }[] =
+      eventoData.inscritos || [];
+    return inscritos.some((inscrito) => inscrito.cpf === cpf); // Retorna true se o CPF estiver na lista
+  } catch (error) {
+    console.error("Erro ao verificar inscrição:", error);
+    throw new Error("Erro ao verificar inscrição"); // Lidar com erro adequadamente
+  }
+};

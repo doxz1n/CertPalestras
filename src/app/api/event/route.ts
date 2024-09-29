@@ -1,4 +1,4 @@
-import { db } from "../../../../lib/firebase";
+import { db } from "@/lib/firebase";
 import eventoSchema, { Evento } from "@/utils/eventoSchema";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { NextResponse } from "next/server";

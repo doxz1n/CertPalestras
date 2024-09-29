@@ -1,5 +1,5 @@
 import InscricaoForm from "@/components/InscricaoForm";
-import { obterEventoPorId } from "@/../lib/actions"; // Certifique-se de que o caminho está correto
+import { obterEventoPorId } from "../../../lib/actions"; // Certifique-se de que o caminho está correto
 import { Evento } from "@/utils/eventoSchema";
 
 interface EventoPageProps {

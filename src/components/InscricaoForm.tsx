@@ -1,8 +1,8 @@
 "use client";
 
-import { buscaCpf } from "../../lib/actions";
+import { Formik } from "formik";
+import { buscaCpf, verificaInscricao } from "../lib/actions"; // Certifique-se de que a função verificaInscricao esteja importada
 import { useState } from "react";
-import axios from "axios";
 
 interface InscricaoFormProps {
   eventoId: string;
@@ -11,38 +11,78 @@ interface InscricaoFormProps {
 const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
   const [cpf, setCpf] = useState("");
   const [existeCpf, setExisteCpf] = useState(false);
+  const [jaInscrito, setJaInscrito] = useState(false); // Novo estado para verificar se já está inscrito
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const verificarCpf = async () => {
+  const handleBlurCpf = async () => {
+    setLoading(true);
     try {
-      const existe = await buscaCpf(cpf);
-      setExisteCpf(existe); // true se o CPF já estiver no sistema
+      const cpfExiste = await buscaCpf(cpf);
+      setExisteCpf(cpfExiste);
+
+      if (cpfExiste) {
+        const inscrito = await verificaInscricao(cpf, eventoId); // Verifica se já está inscrito
+        setJaInscrito(inscrito);
+        setMensagem(
+          inscrito
+            ? "Você já está inscrito neste evento."
+            : "CPF já cadastrado, confirme a inscrição."
+        );
+      } else {
+        setMensagem("CPF não cadastrado.");
+      }
     } catch (error) {
-      console.error("Erro ao verificar CPF:", error);
+      console.error("Erro ao buscar CPF:", error);
+      setMensagem("Erro ao verificar o CPF.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleInscricao = async () => {
+    setLoading(true);
     try {
-      if (existeCpf) {
-        // Usuário já existe, apenas inscrevê-lo no evento
-        await axios.post("/api/inscrever", { cpf, eventoId });
-        setMensagem("Inscrição realizada com sucesso!");
+      if (jaInscrito) {
+        setMensagem("Você já está inscrito neste evento."); // Mensagem se já estiver inscrito
+        return;
+      }
+
+      const url = existeCpf
+        ? "/api/event/inscricao"
+        : "/api/event/novo-inscricao";
+      const body = existeCpf
+        ? { cpf, eventoId }
+        : { cpf, nome, email, eventoId };
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (response.ok) {
+        setMensagem(
+          existeCpf
+            ? "Inscrição realizada com sucesso"
+            : "Usuário cadastrado e inscrição realizada com sucesso!"
+        );
       } else {
-        // Cadastrar novo usuário e inscrevê-lo
-        await axios.post("/api/cadastrar-inscrever", {
-          cpf,
-          nome,
-          email,
-          eventoId,
-        });
-        setMensagem("Usuário cadastrado e inscrição realizada com sucesso!");
+        setMensagem(
+          existeCpf
+            ? "Erro ao realizar inscrição"
+            : "Erro ao cadastrar usuário e realizar inscrição"
+        );
       }
     } catch (error) {
       console.error("Erro ao inscrever:", error);
       setMensagem("Erro ao realizar a inscrição.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,18 +98,21 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
             type="text"
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
-            onBlur={verificarCpf}
+            onBlur={handleBlurCpf} // Chama a busca quando o campo perde o foco
             placeholder="Digite seu CPF"
             className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
           />
         </div>
 
-        {existeCpf ? (
+        {jaInscrito ? (
+          <p className="text-red-500">Você já está inscrito neste evento.</p>
+        ) : existeCpf ? (
           <button
             onClick={handleInscricao}
             className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+            disabled={loading}
           >
-            Confirmar Inscrição
+            {loading ? "Processando..." : "Confirmar Inscrição"}
           </button>
         ) : (
           <form className="space-y-4">
@@ -81,6 +124,7 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
                 onChange={(e) => setNome(e.target.value)}
                 placeholder="Digite seu nome"
                 className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+                disabled={existeCpf || loading}
               />
             </div>
             <div>
@@ -91,13 +135,15 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Digite seu email"
                 className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+                disabled={existeCpf || loading}
               />
             </div>
             <button
               onClick={handleInscricao}
               className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+              disabled={loading}
             >
-              Cadastrar e Inscrever
+              {loading ? "Processando..." : "Cadastrar e Inscrever"}
             </button>
           </form>
         )}
