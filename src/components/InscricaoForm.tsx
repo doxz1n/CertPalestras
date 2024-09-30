@@ -1,8 +1,10 @@
 "use client";
 
-import { Formik } from "formik";
-import { buscaCpf, verificaInscricao } from "../lib/actions"; // Certifique-se de que a função verificaInscricao esteja importada
+import { Form, Formik } from "formik";
+import InputMask from "react-input-mask";
+import { buscaCpf, verificaInscricao } from "../lib/actions";
 import { useState } from "react";
+import { Aluno, alunoSchema } from "@/utils/alunoSchema";
 
 interface InscricaoFormProps {
   eventoId: string;
@@ -11,20 +13,33 @@ interface InscricaoFormProps {
 const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
   const [cpf, setCpf] = useState("");
   const [existeCpf, setExisteCpf] = useState(false);
-  const [jaInscrito, setJaInscrito] = useState(false); // Novo estado para verificar se já está inscrito
+  const [jaInscrito, setJaInscrito] = useState(false);
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const initialValues: Aluno = {
+    nome: "",
+    cpf: "",
+    email: "",
+  };
+
+  // Função para remover a máscara do CPF
+  const removerMascaraCpf = (cpf: string) => {
+    return cpf.replace(/\D/g, ""); // Remove todos os caracteres que não são dígitos
+  };
+
   const handleBlurCpf = async () => {
     setLoading(true);
+    const cpfLimpo = removerMascaraCpf(cpf); // Remove a máscara do CPF
+
     try {
-      const cpfExiste = await buscaCpf(cpf);
+      const cpfExiste = await buscaCpf(cpfLimpo); // Verifica se o CPF existe usando o CPF limpo
       setExisteCpf(cpfExiste);
 
       if (cpfExiste) {
-        const inscrito = await verificaInscricao(cpf, eventoId); // Verifica se já está inscrito
+        const inscrito = await verificaInscricao(cpfLimpo, eventoId); // Verifica se já está inscrito
         setJaInscrito(inscrito);
         setMensagem(
           inscrito
@@ -44,18 +59,19 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
 
   const handleInscricao = async () => {
     setLoading(true);
+    if (email === "" || nome === "" || cpf === "") {
+      setMensagem("Preencha todos os campos do formulário");
+      setLoading(false);
+      return;
+    }
     try {
-      if (jaInscrito) {
-        setMensagem("Você já está inscrito neste evento."); // Mensagem se já estiver inscrito
-        return;
-      }
-
+      const cpfLimpo = removerMascaraCpf(cpf); // Remove a máscara do CPF para envio
       const url = existeCpf
         ? "/api/event/inscricao"
         : "/api/event/novo-inscricao";
       const body = existeCpf
-        ? { cpf, eventoId }
-        : { cpf, nome, email, eventoId };
+        ? { cpf: cpfLimpo, eventoId }
+        : { cpf: cpfLimpo, nome, email, eventoId };
 
       const response = await fetch(url, {
         method: "POST",
@@ -94,21 +110,23 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
           <label htmlFor="cpf" className="block text-sm font-medium">
             CPF:
           </label>
-          <input
-            type="text"
+          <InputMask
+            mask="999.999.999-99"
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
-            onBlur={handleBlurCpf} // Chama a busca quando o campo perde o foco
+            onBlur={handleBlurCpf}
             placeholder="Digite seu CPF"
             className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
           />
         </div>
-
         {jaInscrito ? (
-          <p className="text-red-500">Você já está inscrito neste evento.</p>
+          <div className="space-y-4"></div>
         ) : existeCpf ? (
           <button
-            onClick={handleInscricao}
+            onClick={(e) => {
+              e.preventDefault();
+              handleInscricao();
+            }}
             className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
             disabled={loading}
           >
@@ -124,6 +142,7 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
                 onChange={(e) => setNome(e.target.value)}
                 placeholder="Digite seu nome"
                 className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+                required
                 disabled={existeCpf || loading}
               />
             </div>
@@ -135,6 +154,7 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Digite seu email"
                 className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+                required
                 disabled={existeCpf || loading}
               />
             </div>
@@ -147,7 +167,6 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
             </button>
           </form>
         )}
-
         {mensagem && <p>{mensagem}</p>}
       </div>
     </div>
