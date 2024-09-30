@@ -14,10 +14,11 @@ const dateFormat = "DD/MM/YYYY HH:mm";
 const EventoPage = async ({ params }: EventoPageProps) => {
   // Usando a função obterEventoPorId diretamente
   const evento = await obterEventoPorId(params.id);
-
   if (!evento) {
     return <p>Evento não encontrado {params.id}</p>;
   }
+
+  const disponivel = evento.vagas > 0;
 
   return (
     <div className="container mx-auto p-4">
@@ -31,7 +32,11 @@ const EventoPage = async ({ params }: EventoPageProps) => {
         </p>
         <p className="text-gray-600">Vagas: {evento.vagas}</p>
 
-        <InscricaoForm eventoId={evento.id!} />
+        {disponivel ? (
+          <InscricaoForm eventoId={evento.id!} />
+        ) : (
+          <p>Não há vagas</p>
+        )}
       </div>
     </div>
   );

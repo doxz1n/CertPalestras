@@ -1,10 +1,10 @@
 "use client";
 
 import { Form, Formik } from "formik";
-import InputMask from "react-input-mask";
 import { buscaCpf, verificaInscricao } from "../lib/actions";
 import { useState } from "react";
 import { Aluno, alunoSchema } from "@/utils/alunoSchema";
+import { useRouter } from "next/navigation";
 
 interface InscricaoFormProps {
   eventoId: string;
@@ -18,6 +18,7 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
   const [email, setEmail] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const initialValues: Aluno = {
     nome: "",
@@ -25,21 +26,14 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
     email: "",
   };
 
-  // Função para remover a máscara do CPF
-  const removerMascaraCpf = (cpf: string) => {
-    return cpf.replace(/\D/g, ""); // Remove todos os caracteres que não são dígitos
-  };
-
   const handleBlurCpf = async () => {
     setLoading(true);
-    const cpfLimpo = removerMascaraCpf(cpf); // Remove a máscara do CPF
-
     try {
-      const cpfExiste = await buscaCpf(cpfLimpo); // Verifica se o CPF existe usando o CPF limpo
+      const cpfExiste = await buscaCpf(cpf);
       setExisteCpf(cpfExiste);
 
       if (cpfExiste) {
-        const inscrito = await verificaInscricao(cpfLimpo, eventoId); // Verifica se já está inscrito
+        const inscrito = await verificaInscricao(cpf, eventoId);
         setJaInscrito(inscrito);
         setMensagem(
           inscrito
@@ -59,19 +53,20 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
 
   const handleInscricao = async () => {
     setLoading(true);
-    if (email === "" || nome === "" || cpf === "") {
+    // Se o CPF já existe, não faz a validação de nome e email
+    if (!existeCpf && (email === "" || nome === "")) {
       setMensagem("Preencha todos os campos do formulário");
       setLoading(false);
       return;
     }
+
     try {
-      const cpfLimpo = removerMascaraCpf(cpf); // Remove a máscara do CPF para envio
       const url = existeCpf
         ? "/api/event/inscricao"
         : "/api/event/novo-inscricao";
       const body = existeCpf
-        ? { cpf: cpfLimpo, eventoId }
-        : { cpf: cpfLimpo, nome, email, eventoId };
+        ? { cpf, eventoId } // Apenas CPF e eventoId se já estiver cadastrado
+        : { cpf, nome, email, eventoId }; // Nome e email somente se for novo cadastro
 
       const response = await fetch(url, {
         method: "POST",
@@ -87,6 +82,9 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
             ? "Inscrição realizada com sucesso"
             : "Usuário cadastrado e inscrição realizada com sucesso!"
         );
+        setTimeout(() => {
+          router.push("/"); // Redirecionando para a página inicial
+        }, 1000);
       } else {
         setMensagem(
           existeCpf
@@ -110,8 +108,8 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
           <label htmlFor="cpf" className="block text-sm font-medium">
             CPF:
           </label>
-          <InputMask
-            mask="999.999.999-99"
+          <input
+            type="text"
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
             onBlur={handleBlurCpf}
@@ -119,9 +117,8 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
             className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
           />
         </div>
-        {jaInscrito ? (
-          <div className="space-y-4"></div>
-        ) : existeCpf ? (
+
+        {existeCpf ? (
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -167,6 +164,7 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
             </button>
           </form>
         )}
+
         {mensagem && <p>{mensagem}</p>}
       </div>
     </div>
