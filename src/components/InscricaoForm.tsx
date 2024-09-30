@@ -31,15 +31,10 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
     try {
       const cpfExiste = await buscaCpf(cpf);
       setExisteCpf(cpfExiste);
-
       if (cpfExiste) {
         const inscrito = await verificaInscricao(cpf, eventoId);
         setJaInscrito(inscrito);
-        setMensagem(
-          inscrito
-            ? "Você já está inscrito neste evento."
-            : "CPF já cadastrado, confirme a inscrição."
-        );
+        setMensagem(inscrito ? "" : "CPF já cadastrado, confirme a inscrição.");
       } else {
         setMensagem("CPF não cadastrado.");
       }
@@ -111,14 +106,21 @@ const InscricaoForm = ({ eventoId }: InscricaoFormProps) => {
           <input
             type="text"
             value={cpf}
-            onChange={(e) => setCpf(e.target.value)}
+            onChange={(e) => {
+              setCpf(e.target.value);
+              setExisteCpf(false); // Reseta o estado sempre que o CPF é alterado
+              setJaInscrito(false); // Reseta o estado de inscrição
+              setMensagem(""); // Limpa mensagens anteriores
+            }}
             onBlur={handleBlurCpf}
             placeholder="Digite seu CPF"
             className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
           />
         </div>
 
-        {existeCpf ? (
+        {jaInscrito ? (
+          <p className="text-red">Você já está inscrito neste evento.</p>
+        ) : existeCpf ? (
           <button
             onClick={(e) => {
               e.preventDefault();
