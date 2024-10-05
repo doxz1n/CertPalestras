@@ -27,9 +27,34 @@ export async function POST(request: Request) {
     );
   } catch (error: any) {
     console.error("Erro ao criar usuário:", error);
-    return NextResponse.json(
-      { error: "Erro interno do servidor" },
-      { status: 500 }
-    );
-  }
+    
+    let errorMessage = "Erro desconhecido ao criar o usuario.";
+    if (error instanceof Error) {
+	//tratamento padrao
+	errorMessage = error.message;
+    } else if ( typeof error === 'string') {
+	errorMessage = error;
+    } else if (error?.code) {
+	switch (error.code) {
+		case 'auth/email-already-in-use':
+			errorMessage = 'Este email ja esta sendo utilizado';
+			break;
+		case 'auth/invalid-email':
+			errorMessage = 'Formato de email incorreto';
+			break;
+  		case 'auth/operation-not-allowed':
+			errorMessage = 'Firebase nao instalado no projeto';
+			break;
+		case 'auth/weak-password':
+			errorMessage = 'Senha nao atende os requisitos minimos';
+			break;
+		case 'auth/too-many-requests':
+			errorMessage = 'Indisponivel no momento, tente mais tarde';
+			break;
+		case 'auth/internal-error':
+			errorMessage = 'Erro no Servidor';
+			break;
 }
+}
+}
+}	

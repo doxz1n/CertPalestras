@@ -19,6 +19,11 @@ export default function Page() {
         }
     }, [router]);
 
+	const handleLogout = () => {
+		localStorage.removeItem("uid");
+		router.push("/login");
+	};
+
     if (!token) {
         return null;
     } else {
@@ -27,7 +32,11 @@ export default function Page() {
             <div className="flex flex-col h-screen justify-between bg-blue-500">
                 <Header/>
                 <main className="bg-white dark:bg-black flex items-center justify-center flex-grow">
-                    <h1> Oi mundo</h1>
+			<button
+				onClick = {handleLogout}
+				className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
+				Logout
+			</button>
                 </main>
                 <Footer/>
             </div>
