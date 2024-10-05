@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 
-// Define a interface para o usuário
 interface EventoInscrito {
   eventoId: string;
   presencaValidada: boolean;
@@ -11,22 +10,18 @@ interface Certificado {
   emitidoEm: Date;
 }
 
-//
-export interface Usuario {
+export interface Aluno {
   email: string;
   nome: string;
-  tipo: "aluno" | "coordenador";
-  eventosInscritos: EventoInscrito[];
-  certificados: Certificado[];
+  cpf: string;
+  eventosInscritos?: EventoInscrito[];
+  certificados?: Certificado[];
 }
 
-// Define o schema de validação usando Yup
-const userSchema: Yup.ObjectSchema<Usuario> = Yup.object().shape({
-  email: Yup.string().email().required(),
-  nome: Yup.string().required(),
-  tipo: Yup.mixed<"aluno" | "coordenador">()
-    .oneOf(["aluno", "coordenador"])
-    .required(),
+export const alunoSchema: Yup.ObjectSchema<Aluno> = Yup.object().shape({
+  email: Yup.string().email().required("Email é obrigatório"),
+  nome: Yup.string().required("Nome é obrigatório"),
+  cpf: Yup.string().required("CPF é obrigatório"),
   eventosInscritos: Yup.array()
     .of(
       Yup.object().shape({
@@ -34,7 +29,7 @@ const userSchema: Yup.ObjectSchema<Usuario> = Yup.object().shape({
         presencaValidada: Yup.boolean().required(),
       })
     )
-    .required(),
+    .optional(),
   certificados: Yup.array()
     .of(
       Yup.object().shape({
@@ -42,7 +37,7 @@ const userSchema: Yup.ObjectSchema<Usuario> = Yup.object().shape({
         emitidoEm: Yup.date().required(),
       })
     )
-    .required(),
+    .optional(),
 });
 
-export default userSchema;
+export default alunoSchema;
