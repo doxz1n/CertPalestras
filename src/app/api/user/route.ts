@@ -1,4 +1,4 @@
-import { db } from "@/../lib/firebase";
+import { db } from "@/lib/firebase";
 import userSchema, { Usuario } from "@/utils/userSchema";
 import { collection, addDoc } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
