@@ -1,4 +1,4 @@
-import { db } from "@/../lib/firebase";
+import { db } from "@/lib/firebase";
 import { collection, addDoc, Timestamp, getDocs } from "firebase/firestore";
 import { NextResponse } from "next/server";
 
@@ -44,23 +44,20 @@ export async function POST(request: Request) {
 }
 //Ainda necessita de Teste
 export async function GET() {
-	try {
-		const contatoCollection = collection(db,"contatos");
-		//Eh para pegar os dados advindos dos contatos.
-		const snapshot = await getDocs(contatoCollection);
-		//Converte para um arquivo json incluindo o id.
-		const contatos = snapshot.docs.map(docs  =>({
-			id: docs.id,
-			...docs.data()
-		}));
-	return NextResponse.json(contatos, {status: 200});
-	}
-	catch (error) {
-	return NextResponse.json(
-		{message: "Erro ao buscar contato."},
-		{status: 500}
-	);
-	}
+  try {
+    const contatoCollection = collection(db, "contatos");
+    //Eh para pegar os dados advindos dos contatos.
+    const snapshot = await getDocs(contatoCollection);
+    //Converte para um arquivo json incluindo o id.
+    const contatos = snapshot.docs.map((docs) => ({
+      id: docs.id,
+      ...docs.data(),
+    }));
+    return NextResponse.json(contatos, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Erro ao buscar contato." },
+      { status: 500 }
+    );
+  }
 }
-
-
