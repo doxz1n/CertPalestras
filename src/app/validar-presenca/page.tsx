@@ -1,7 +1,7 @@
-"use client"; // Indica que este componente é renderizado no lado do cliente
+"use client";
 
 import React, { useEffect, useState } from "react";
-import CPFInputForm from "@/components/CPFInputForm"; // Certifique-se de importar seu componente de formulário corretamente
+import CPFInputForm from "@/components/CPFInputForm";
 
 const VerificarPresenca: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);

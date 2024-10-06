@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Importa o useRouter para redirecionamento
+import { useRouter } from "next/navigation";
 
 const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
   const [cpf, setCpf] = useState("");
   const [mensagem, setMensagem] = useState<string | null>(null);
-  const router = useRouter(); // Instancia o hook useRouter
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,9 +57,7 @@ const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
             Validar Presença
           </button>
         </form>
-        {mensagem && (
-          <p className="mt-4 text-center">{mensagem}</p> // Exibe a mensagem
-        )}
+        {mensagem && <p className="mt-4 text-center">{mensagem}</p>}
       </div>
     </div>
   );
