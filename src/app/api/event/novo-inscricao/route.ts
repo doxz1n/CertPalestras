@@ -14,10 +14,12 @@ export async function POST(request: Request) {
     await setDoc(userRef, {
       nome,
       email,
-      eventosInscritos: {
-        eventoId,
-        presencaValidada: false,
-      },
+      eventosInscritos: [
+        {
+          eventoId,
+          presencaValidada: false,
+        },
+      ],
     });
 
     const eventoRef = doc(db, "eventos", eventoId);
