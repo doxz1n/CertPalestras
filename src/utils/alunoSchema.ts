@@ -18,7 +18,7 @@ export interface Aluno {
   certificados?: Certificado[];
 }
 
-export const alunoSchema: Yup.ObjectSchema<Aluno> = Yup.object().shape({
+const alunoSchema: Yup.ObjectSchema<Aluno> = Yup.object().shape({
   email: Yup.string().email().required("Email é obrigatório"),
   nome: Yup.string().required("Nome é obrigatório"),
   cpf: Yup.string().required("CPF é obrigatório"),
