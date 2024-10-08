@@ -3,8 +3,17 @@
 import { useState, useEffect } from "react";
 import moment from "moment";
 import { Evento } from "@/utils/eventoSchema";
+import { useRouter } from "next/navigation";
 
 export default function FutureEvents() {
+  const router = useRouter();
+  const handleInscricao = (eventoId: any) => {
+    router.push(`/inscricao/${eventoId}`);
+  };
+
+  const handleQr = (eventoId: any) => {
+    router.push(`/qr/${eventoId}`);
+  };
   // Estado para armazenar os eventos futuros
   const [eventos, setEventos] = useState<Evento[]>([]);
   // Estado para indicar se os eventos estão sendo carregados
@@ -17,6 +26,7 @@ export default function FutureEvents() {
    * aqueles que ainda irão acontecer e ordená-los para exibir os mais
    * próximos de acontecer primeiro.
    */
+
   const fetchEventos = async () => {
     try {
       // Faz a requisição para a API para obter eventos
@@ -38,11 +48,11 @@ export default function FutureEvents() {
 
       // Filtra eventos futuros e ordena por data de início
       const eventosFuturos = eventos
-        .filter((evento: Evento) =>
-          moment(evento.dataFim).isAfter(moment()) // Verifica se a data de fim é futura
+        .filter(
+          (evento: Evento) => moment(evento.dataFim).isAfter(moment()) // Verifica se a data de fim é futura
         )
-        .sort((a: Evento, b: Evento) =>
-          moment(a.dataFim).diff(moment(b.dataFim)) // Ordena por data de início
+        .sort(
+          (a: Evento, b: Evento) => moment(a.dataFim).diff(moment(b.dataFim)) // Ordena por data de início
         );
 
       // Atualiza o estado com eventos futuros
@@ -82,23 +92,42 @@ export default function FutureEvents() {
         <p>Nenhum evento futuro encontrado.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <ul className="space-y-4">
-          {eventos.map((evento) => (
-            <li key={evento.id} className="bg-gray-100 p-6 rounded-lg shadow-md border p-4 rounded-lg">
-              <h3 className="text-xl font-semibold">{evento.nome}</h3>
-              <p>{evento.descricao}</p>
-              <p>
-                <strong>Início:</strong> {moment(evento.dataInicio).format("DD/MM/YYYY HH:mm")}
-              </p>
-              <p>
-                <strong>Fim:</strong> {moment(evento.dataFim).format("DD/MM/YYYY HH:mm")}
-              </p>
-              <p>
-                <strong>Vagas:</strong> {evento.vagas}
-              </p>
-            </li>
-          ))}
-        </ul>
+          <ul className="space-y-4">
+            {eventos.map((evento) => (
+              <li
+                key={evento.id}
+                className="bg-gray-100 p-6 rounded-lg shadow-md border p-4 rounded-lg"
+              >
+                <h3 className="text-xl font-semibold">{evento.nome}</h3>
+                <p>{evento.descricao}</p>
+                <p>
+                  <strong>Início:</strong>{" "}
+                  {moment(evento.dataInicio).format("DD/MM/YYYY HH:mm")}
+                </p>
+                <p>
+                  <strong>Fim:</strong>{" "}
+                  {moment(evento.dataFim).format("DD/MM/YYYY HH:mm")}
+                </p>
+                <p>
+                  <strong>Vagas:</strong> {evento.vagas}
+                </p>
+                <div>
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    onClick={() => handleInscricao(evento.id)}
+                  >
+                    Inscreva-se
+                  </button>
+                  <button // Provisorio
+                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    onClick={() => handleQr(evento.id)}
+                  >
+                    Gerar QR
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
