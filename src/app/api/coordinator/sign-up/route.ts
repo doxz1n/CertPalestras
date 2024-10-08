@@ -39,22 +39,11 @@ export async function POST(request: Request) {
 		case 'auth/email-already-in-use':
 			errorMessage = 'Este email ja esta sendo utilizado';
 			break;
-		case 'auth/invalid-email':
-			errorMessage = 'Formato de email incorreto';
-			break;
-  		case 'auth/operation-not-allowed':
-			errorMessage = 'Firebase nao instalado no projeto';
-			break;
-		case 'auth/weak-password':
-			errorMessage = 'Senha nao atende os requisitos minimos';
-			break;
-		case 'auth/too-many-requests':
-			errorMessage = 'Indisponivel no momento, tente mais tarde';
-			break;
 		case 'auth/internal-error':
 			errorMessage = 'Erro no Servidor';
 			break;
+   }
 }
-}
+    return NextResponse.json({error: responseMessage}, {status: statusCode};
 }
 }	

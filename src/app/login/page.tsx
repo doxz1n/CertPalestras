@@ -28,7 +28,7 @@ const LoginTeacher: React.FC = () => {
   };
 
   // Função de submit do formulário
-  const login = async (values: { email: string; senha: string }) => {
+  const login = async (values: { email, senha, setStatus}: string) => {
     const { email, senha } = values;
     const response = await fetch("/api/coordinator/sign-on", {
       method: "POST",
@@ -40,8 +40,9 @@ const LoginTeacher: React.FC = () => {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error);
-    }
+      setStatus({error: errorData.error});
+    	
+	}
 
     const userData = await response.json();
 

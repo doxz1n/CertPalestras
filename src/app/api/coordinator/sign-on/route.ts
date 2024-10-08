@@ -27,18 +27,6 @@ export async function POST(request: Request) {
 		let statusCode = 400; // Código padrão para erros conhecidos
 
 		switch (errorCode) {
-			case 'auth/email-already-in-use':
-				responseMessage = 'Este e-mail já está em uso.';
-				break;
-			case 'auth/invalid-email':
-				responseMessage = 'O formato do e-mail é inválido.';
-				break;
-			case 'auth/operation-not-allowed':
-				responseMessage = 'O método de autenticação não está habilitado.';
-				break;
-			case 'auth/weak-password':
-				responseMessage = 'A senha é muito fraca.';
-				break;
 			case 'auth/invalid-credential':
 				responseMessage = 'As credenciais fornecidas são inválidas.';
 				break;
