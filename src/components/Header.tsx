@@ -3,7 +3,7 @@ import Image from "next/image";
 import Logo from "../../public/logo.png";
 function Header() {
   return (
-    <header className="bg-blue-500 py-4">
+    <header className="bg-blue-500 py-4 mb-1">
       <div className="container mx-auto p-4 flex justify-between items-center">
         <div className="logo">
           <Link href="/">
@@ -31,9 +31,14 @@ function Header() {
                 Sobre Nós
               </Link>
             </li>
-            <li>
+            <li className="mr-4">
               <Link href="/contato" className="text-white hover:text-gray-200">
                 Contato
+              </Link>
+            </li>
+            <li>
+              <Link href="/criar-evento" className="text-white hover:text-gray-200">
+                Criar evento
               </Link>
             </li>
           </ul>
