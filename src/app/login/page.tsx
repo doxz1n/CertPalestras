@@ -28,30 +28,36 @@ const LoginTeacher: React.FC = () => {
   };
 
   // Função de submit do formulário
-  const login = async (values: { email, senha, setStatus}: string) => {
+  const login = async (
+    values: { email: string; senha: string },
+    { setStatus, setSubmitting }: any
+  ) => {
     const { email, senha } = values;
-    const response = await fetch("/api/coordinator/sign-on", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, senha }),
-    });
+    try {
+      const response = await fetch("/api/coordinator/sign-on", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, senha }),
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      setStatus({error: errorData.error});
-    	
-	}
+      const userData = await response.json();
 
-    const userData = await response.json();
-
-    // Armazena o UID no localStorage
-    console.log(userData.uid);
-    localStorage.setItem("uid", userData.uid);
-
-    // Redireciona após login bem-sucedido
-    router.push("/painel");
+      if (!response.ok) {
+        // Se a resposta não for OK, define o erro recebido
+        setStatus({ error: userData.error || "Erro desconhecido" });
+      } else {
+        // Armazena o UID no localStorage e redireciona
+        localStorage.setItem("uid", userData.uid);
+        router.push("/painel");
+      }
+    } catch (error) {
+      // Caso haja erro de rede ou outra exceção
+      setStatus({ error: "Erro ao tentar se conectar ao servidor" });
+    } finally {
+      setSubmitting(false); // Permite que o botão de envio seja reativado
+    }
   };
 
   return (
