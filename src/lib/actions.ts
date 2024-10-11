@@ -4,24 +4,13 @@ import { Evento } from "@/utils/eventoSchema"; // Importe a interface do evento
 
 export const obterEventoPorId = async (id: string): Promise<Evento | null> => {
   try {
-    const eventoRef = doc(db, "eventos", id); // Referência ao documento com o ID
-    const eventoDoc = await getDoc(eventoRef); // Obtém o documento pelo ID
+    const response = await fetch(`/api/event/evento-por-id?id=${id}`);
+    const data = await response.json();
 
-    if (eventoDoc.exists()) {
-      // Converte o documento em um objeto do tipo Evento
-      const eventoData = eventoDoc.data();
-      const evento: Evento = {
-        id: eventoDoc.id,
-        vagas: eventoData?.vagas,
-        dataInicio: eventoData?.dataInicio,
-        dataFim: eventoData?.dataFim,
-        nome: eventoData?.nome,
-        descricao: eventoData?.descricao,
-      };
-
-      return evento;
+    if (response.ok && data.evento) {
+      return data.evento;
     } else {
-      console.log(`Evento com ID ${id} não encontrado.`);
+      console.error(data.error || "Erro ao buscar evento.");
       return null;
     }
   } catch (error) {
