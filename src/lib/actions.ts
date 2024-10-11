@@ -30,42 +30,33 @@ export const obterEventoPorId = async (id: string): Promise<Evento | null> => {
   }
 };
 
-export const buscaCpf = async (cpf: string): Promise<boolean> => {
-  try {
-    const alunoRef = doc(db, "alunos", cpf);
-    const alunoDoc = await getDoc(alunoRef);
-    return alunoDoc.exists(); // Retorna true se o documento existir
-  } catch (error) {
-    console.error("Erro ao verificar CPF:", error);
-    return false;
-  }
-};
-
-export const verificaInscricao = async (
+export const buscaCpfEInscricao = async (
   cpf: string,
   eventoId: string
-): Promise<boolean> => {
+): Promise<{
+  exists: boolean;
+  nome?: string;
+  email?: string;
+  inscrito?: boolean;
+}> => {
   try {
-    // Referência ao documento do evento
-    const eventoRef = doc(db, "eventos", eventoId);
+    const response = await fetch(
+      `/api/buscaCpfInscricao?cpf=${cpf}&eventoId=${eventoId}`
+    );
+    const data = await response.json();
 
-    // Obtém o documento do evento
-    const eventoDoc = await getDoc(eventoRef);
-
-    // Verifica se o documento existe
-    if (!eventoDoc.exists()) {
-      throw new Error("Evento não encontrado");
+    if (data.exists) {
+      return {
+        exists: true,
+        nome: data.nome,
+        email: data.email,
+        inscrito: data.inscrito,
+      };
+    } else {
+      return { exists: false };
     }
-
-    // Obtém os dados do evento
-    const eventoData = eventoDoc.data();
-
-    // Verifica se o CPF está na lista de inscritos
-    const inscritos: { nome: string; cpf: string }[] =
-      eventoData.inscritos || [];
-    return inscritos.some((inscrito) => inscrito.cpf === cpf); // Retorna true se o CPF estiver na lista
   } catch (error) {
-    console.error("Erro ao verificar inscrição:", error);
-    throw new Error("Erro ao verificar inscrição"); // Lidar com erro adequadamente
+    console.error("Erro ao verificar CPF e inscrição:", error);
+    return { exists: false };
   }
 };

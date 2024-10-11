@@ -1,6 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import InscricaoForm from "@/components/InscricaoForm";
-import { obterEventoPorId } from "../../../lib/actions"; // Certifique-se de que o caminho está correto
-import { Evento } from "@/utils/eventoSchema";
+import { obterEventoPorId } from "../../../lib/actions";
 import moment from "moment";
 
 interface EventoPageProps {
@@ -12,7 +14,14 @@ interface EventoPageProps {
 const dateFormat = "DD/MM/YYYY HH:mm";
 
 const EventoPage = async ({ params }: EventoPageProps) => {
-  // Usando a função obterEventoPorId diretamente
+  const [rebuildCounter, setRebuildCounter] = useState(0); // Estado para o rebuild
+
+  // Função que será chamada após a inscrição
+  const handleSuccess = () => {
+    setRebuildCounter((prev) => prev + 1); // Atualiza o contador para forçar o rebuild
+  };
+
+  // Recarregar o evento após cada rebuild
   const evento = await obterEventoPorId(params.id);
   if (!evento) {
     return <p>Evento não encontrado {params.id}</p>;
@@ -33,7 +42,7 @@ const EventoPage = async ({ params }: EventoPageProps) => {
         <p className="text-gray-600">Vagas: {evento.vagas}</p>
 
         {disponivel ? (
-          <InscricaoForm eventoId={evento.id!} />
+          <InscricaoForm eventoId={evento.id!} onSuccess={handleSuccess} />
         ) : (
           <p>Não há vagas</p>
         )}
