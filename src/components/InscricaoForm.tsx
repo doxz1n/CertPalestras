@@ -1,30 +1,44 @@
 "use client";
 
-import { Form, Formik } from "formik";
-import { buscaCpfEInscricao } from "../lib/actions";
 import { useState } from "react";
-import { Aluno } from "@/utils/alunoSchema";
+import InputMask from "react-input-mask"; // Importa o InputMask
+import { buscaCpfEInscricao } from "../lib/actions";
 import { useRouter } from "next/navigation";
 
 interface InscricaoFormProps {
   eventoId: string;
-  onSuccess: () => void; // Adiciona a prop onSuccess para notificar o sucesso da inscrição
+  onSuccess: () => void;
 }
 
 const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
   const [cpf, setCpf] = useState("");
+  const [cpfConfirmacao, setCpfConfirmacao] = useState(""); // Estado para confirmação de CPF
   const [existeCpf, setExisteCpf] = useState(false);
   const [jaInscrito, setJaInscrito] = useState(false);
   const [nome, setNome] = useState("");
+  const [nomeConfirmacao, setNomeConfirmacao] = useState(""); // Estado para confirmação de nome
   const [email, setEmail] = useState("");
+  const [emailConfirmacao, setEmailConfirmacao] = useState(""); // Estado para confirmação de e-mail
   const [mensagem, setMensagem] = useState("");
+  const [cpfErro, setCpfErro] = useState(""); // Estado para erros de CPF
+  const [nomeErro, setNomeErro] = useState(""); // Estado para erros de nome
+  const [emailErro, setEmailErro] = useState(""); // Estado para erros de e-mail
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleBlurCpf = async () => {
+    const cpfNumeros = cpf.replace(/\D/g, ""); // Remove máscara para verificar o CPF
+
+    // Verificação se o CPF contém 11 dígitos
+    if (cpfNumeros.length !== 11) {
+      setCpfErro("O CPF deve conter 11 dígitos.");
+      return;
+    }
+
+    setCpfErro(""); // Limpa o erro de CPF se estiver correto
     setLoading(true);
     try {
-      const aluno = await buscaCpfEInscricao(cpf, eventoId);
+      const aluno = await buscaCpfEInscricao(cpfNumeros, eventoId);
       if (aluno.exists) {
         setExisteCpf(true);
         setNome(aluno.nome ?? "");
@@ -40,10 +54,37 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
     }
   };
 
-  const handleInscricao = async () => {
+  const handleInscricao = async (e: React.FormEvent) => {
+    e.preventDefault(); // Evita o comportamento padrão de envio do formulário
+    const cpfNumeros = cpf.replace(/\D/g, ""); // Remove máscara para envio
+    const cpfConfirmacaoNumeros = cpfConfirmacao.replace(/\D/g, "");
+
     setLoading(true);
+
+    // Validação de CPF
+    if (cpfNumeros !== cpfConfirmacaoNumeros) {
+      setCpfErro("Os CPFs não coincidem.");
+      setLoading(false);
+      return;
+    }
+
+    // Validação de Nome
+    if (nome !== nomeConfirmacao) {
+      setNomeErro("Os nomes não coincidem.");
+      setLoading(false);
+      return;
+    }
+
+    // Validação de Email
+    if (email !== emailConfirmacao) {
+      setEmailErro("Os emails não coincidem.");
+      setLoading(false);
+      return;
+    }
+
+    // Validações para CPF e email de novos usuários
     if (!existeCpf && (email === "" || nome === "")) {
-      setMensagem("Preencha todos os campos do formulário");
+      setMensagem("Preencha todos os campos do formulário.");
       setLoading(false);
       return;
     }
@@ -53,8 +94,8 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
         ? "/api/event/inscricao"
         : "/api/event/novo-inscricao";
       const body = existeCpf
-        ? { cpf, eventoId }
-        : { cpf, nome, email, eventoId };
+        ? { cpf: cpfNumeros, eventoId }
+        : { cpf: cpfNumeros, nome, email, eventoId };
 
       const response = await fetch(url, {
         method: "POST",
@@ -67,7 +108,7 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
       if (response.ok) {
         setMensagem(
           existeCpf
-            ? "Inscrição realizada com sucesso"
+            ? "Inscrição realizada com sucesso!"
             : "Usuário cadastrado e inscrição realizada com sucesso!"
         );
         // Espera 3 segundos para exibir a mensagem antes de redirecionar
@@ -99,8 +140,8 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
           <label htmlFor="cpf" className="block text-sm font-medium">
             CPF:
           </label>
-          <input
-            type="text"
+          <InputMask
+            mask="999.999.999-99"
             value={cpf}
             onChange={(e) => {
               setCpf(e.target.value);
@@ -113,6 +154,19 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
             onBlur={handleBlurCpf}
             placeholder="Digite seu CPF"
             className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+          />
+          {cpfErro && <p className="text-red-500 text-sm mt-1">{cpfErro}</p>}
+          <label htmlFor="cpfConfirmacao" className="block text-sm font-medium">
+            Confirme o CPF:
+          </label>
+          <InputMask
+            mask="999.999.999-99"
+            value={cpfConfirmacao}
+            onChange={(e) => setCpfConfirmacao(e.target.value)}
+            placeholder="Confirme seu CPF"
+            className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+            required
+            disabled={existeCpf || loading}
           />
         </div>
 
@@ -157,7 +211,7 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  handleInscricao();
+                  handleInscricao(e);
                 }}
                 className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
                 disabled={loading}
@@ -176,7 +230,7 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
                 Caso haja alguma informação incorreta, corrija antes de enviar!
               </p>
             </div>
-            <form className="mt-4 space-y-4">
+            <form className="mt-4 space-y-4" onSubmit={handleInscricao}>
               <div>
                 <label className="block text-sm font-medium">Nome:</label>
                 <input
@@ -190,6 +244,23 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
                 />
               </div>
               <div>
+                <label className="block text-sm font-medium">
+                  Confirme o Nome:
+                </label>
+                <input
+                  type="text"
+                  value={nomeConfirmacao}
+                  onChange={(e) => setNomeConfirmacao(e.target.value)}
+                  placeholder="Confirme seu nome"
+                  className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+                  required
+                  disabled={existeCpf || loading}
+                />
+              </div>
+              {nomeErro && (
+                <p className="text-red-500 text-sm mt-1">{nomeErro}</p>
+              )}
+              <div>
                 <label className="block text-sm font-medium">Email:</label>
                 <input
                   type="email"
@@ -201,18 +272,45 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
                   disabled={existeCpf || loading}
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Confirme o Email:
+                </label>
+                <input
+                  type="email"
+                  value={emailConfirmacao}
+                  onChange={(e) => setEmailConfirmacao(e.target.value)}
+                  placeholder="Confirme seu email"
+                  className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+                  required
+                  disabled={existeCpf || loading}
+                />
+              </div>
+              {emailErro && (
+                <p className="text-red-500 text-sm mt-1">{emailErro}</p>
+              )}
               <button
-                onClick={handleInscricao}
+                type="submit"
                 className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
                 disabled={loading}
               >
-                {loading ? "Processando..." : "Cadastrar e Inscrever"}
+                {loading ? "Processando..." : "Enviar Inscrição"}
               </button>
             </form>
           </>
         )}
 
-        {mensagem && <p className="mt-4">{mensagem}</p>}
+        {mensagem && (
+          <div
+            className={`mt-4 p-2 border-l-4 ${
+              mensagem.includes("sucesso")
+                ? "bg-green-100 border-green-500 text-green-900"
+                : "bg-red-100 border-red-500 text-red-900"
+            }`}
+          >
+            {mensagem}
+          </div>
+        )}
       </div>
     </div>
   );
