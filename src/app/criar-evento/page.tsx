@@ -1,4 +1,3 @@
-// Page.tsx
 "use client";
 
 import { Evento } from "@/utils/eventoSchema";
