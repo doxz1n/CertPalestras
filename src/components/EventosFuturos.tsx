@@ -86,21 +86,22 @@ export default function FutureEvents() {
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">Próximos Eventos</h2>
+    <div className="mb-10">
       {eventos.length === 0 ? (
-        <p>Nenhum evento futuro encontrado.</p>
+        <p className="text-gray-600">Nenhum evento futuro encontrado.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <ul className="space-y-4">
             {eventos.map((evento) => (
               <li
                 key={evento.id}
-                className="bg-gray-100 p-6 rounded-lg shadow-md border p-4 rounded-lg"
+                className="bg-white p-6 rounded-lg shadow-lg border border-gray-200 transition-transform transform hover:scale-105"
               >
-                <h3 className="text-xl font-semibold">{evento.nome}</h3>
-                <p>{evento.descricao}</p>
-                <p>
+                <h3 className="text-xl font-semibold text-blue-600">
+                  {evento.nome}
+                </h3>
+                <p className="text-gray-700">{evento.descricao}</p>
+                <p className="mt-2">
                   <strong>Início:</strong>{" "}
                   {moment(evento.dataInicio).format("DD/MM/YYYY HH:mm")}
                 </p>
@@ -111,15 +112,15 @@ export default function FutureEvents() {
                 <p>
                   <strong>Vagas:</strong> {evento.vagas}
                 </p>
-                <div>
+                <div className="flex justify-between mt-4">
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
                     onClick={() => handleInscricao(evento.id)}
                   >
                     Inscreva-se
                   </button>
-                  <button // Provisorio
-                    className="bg-red-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  <button // Provisório
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
                     onClick={() => handleQr(evento.id)}
                   >
                     Gerar QR

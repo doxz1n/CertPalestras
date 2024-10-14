@@ -51,28 +51,11 @@ export default function Contato() {
   };
 
   return (
-    <main className="flex flex-col flex-1 items-center justify-center">
-      {/* 
-          flex-col: Alinha os itens filhos em uma coluna.
-          flex-1: Permite que o main ocupe o máximo de altura disponível entre o header e o footer.
-          items-center: Alinha os itens no centro horizontalmente.
-          justify-center: Alinha os itens no centro verticalmente.
-        */}
-      <div className="bg-blue-900 text-white p-8 rounded-lg max-w-lg w-full">
-        {/* 
-            bg-blue-900: Define o background do formulário como azul escuro.
-            text-white: Define a cor do texto como branco.
-            p-8: Aplica 2rem (32px) de padding ao redor do conteúdo.
-            rounded-lg: Aplica bordas arredondadas grandes ao contêiner.
-            max-w-lg: Define a largura máxima do contêiner como large (32rem ou 512px).
-            w-full: Faz com que o contêiner ocupe toda a largura disponível dentro de seu pai.
-          */}
-        <h1 className="text-2xl font-bold mb-6">Entre em Contato</h1>
-        {/* 
-            text-2xl: Define o tamanho do texto como 2xl (1.5rem ou 24px).
-            font-bold: Aplica peso de fonte negrito ao texto.
-            mb-6: Aplica uma margem inferior de 1.5rem (24px) abaixo do título.
-          */}
+    <main className="flex flex-1 items-center justify-center py-12">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+          Entre em Contato
+        </h1>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -81,14 +64,17 @@ export default function Contato() {
           {({ isSubmitting, status }) => (
             <Form>
               <div className="mb-4">
-                <label htmlFor="nome" className="block text-sm font-medium">
+                <label
+                  htmlFor="nome"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Nome
                 </label>
                 <Field
                   type="text"
                   name="nome"
                   id="nome"
-                  className="mt-1 p-2 block w-full bg-gray-900 border border-gray-700 rounded-md"
+                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 />
                 <ErrorMessage
                   name="nome"
@@ -98,14 +84,17 @@ export default function Contato() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="email" className="block text-sm font-medium">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Email
                 </label>
                 <Field
                   type="email"
                   name="email"
                   id="email"
-                  className="mt-1 p-2 block w-full bg-gray-900 border border-gray-700 rounded-md"
+                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 />
                 <ErrorMessage
                   name="email"
@@ -115,14 +104,18 @@ export default function Contato() {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="mensagem" className="block text-sm font-medium">
+                <label
+                  htmlFor="mensagem"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Mensagem
                 </label>
                 <Field
                   as="textarea"
                   name="mensagem"
                   id="mensagem"
-                  className="mt-1 p-2 block w-full bg-gray-900 border border-gray-700 rounded-md"
+                  rows={4}
+                  className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                 />
                 <ErrorMessage
                   name="mensagem"
@@ -133,19 +126,21 @@ export default function Contato() {
 
               <button
                 type="submit"
-                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors"
                 disabled={isSubmitting}
               >
                 Enviar
               </button>
 
               {status?.success && (
-                <div className="text-green-500 text-sm mt-2">
+                <div className="text-green-500 text-sm mt-2 text-center">
                   {status.success}
                 </div>
               )}
               {status?.error && (
-                <div className="text-red-500 text-sm mt-2">{status.error}</div>
+                <div className="text-red-500 text-sm mt-2 text-center">
+                  {status.error}
+                </div>
               )}
             </Form>
           )}
