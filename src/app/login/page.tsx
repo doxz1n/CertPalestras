@@ -7,11 +7,10 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useRouter } from "next/navigation";
 import * as Yup from "yup";
 
-// Adicionado tipagem para a função LoginTeacher
 const LoginTeacher: React.FC = () => {
   const router = useRouter();
 
-  // Definição do schema de validação com Yup
+  // Schema de validação com Yup
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email("Email inválido")
@@ -21,7 +20,7 @@ const LoginTeacher: React.FC = () => {
       .required("O campo senha é obrigatório"),
   });
 
-  // Definição dos valores iniciais do formulário
+  // Valores iniciais do formulário
   const initialValues = {
     email: "",
     senha: "",
@@ -45,94 +44,88 @@ const LoginTeacher: React.FC = () => {
       const userData = await response.json();
 
       if (!response.ok) {
-        // Se a resposta não for OK, define o erro recebido
         setStatus({ error: userData.error || "Erro desconhecido" });
       } else {
-        // Armazena o UID no localStorage e redireciona
         localStorage.setItem("uid", userData.uid);
         router.push("/painel");
       }
     } catch (error) {
-      // Caso haja erro de rede ou outra exceção
       setStatus({ error: "Erro ao tentar se conectar ao servidor" });
     } finally {
-      setSubmitting(false); // Permite que o botão de envio seja reativado
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col h-screen justify-between bg-blue-500">
-      <Header />
-      <main className="bg-white dark:bg-black flex items-center justify-center flex-grow">
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-lg w-full">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={login}
-          >
-            {({ isSubmitting, status }) => (
-              <Form>
-                <div className="mb-4">
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Email
-                  </label>
-                  <Field
-                    name="email"
-                    type="email"
-                    className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    aria-label="Email"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <label
-                    htmlFor="senha"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Senha
-                  </label>
-                  <Field
-                    name="senha"
-                    type="password"
-                    className="mt-1 text-black block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                    aria-label="Senha"
-                  />
-                  <ErrorMessage
-                    name="senha"
-                    component="div"
-                    className="text-red-500 text-sm mt-1"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
-                  disabled={isSubmitting}
+    <main className="flex-grow flex justify-center items-center p-4 ">
+      <div className="bg-blue-900 p-8 rounded-lg shadow-lg w-full max-w-md text-white">
+        <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={login}
+        >
+          {({ isSubmitting, status }) => (
+            <Form>
+              <div className="mb-4">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-300"
                 >
-                  {isSubmitting ? "Enviando..." : "Login"}
-                </button>
+                  Email
+                </label>
+                <Field
+                  name="email"
+                  type="email"
+                  className="mt-1 text-white block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  aria-label="Email"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
 
-                {status && status.success && (
-                  <div className="text-green-500 mt-4">{status.success}</div>
-                )}
-                {status && status.error && (
-                  <div className="text-red-500 mt-4">{status.error}</div>
-                )}
-              </Form>
-            )}
-          </Formik>
-        </div>
-      </main>
-      <Footer />
-    </div>
+              <div className="mb-4">
+                <label
+                  htmlFor="senha"
+                  className="block text-sm font-medium text-gray-300"
+                >
+                  Senha
+                </label>
+                <Field
+                  name="senha"
+                  type="password"
+                  className="mt-1 text-white block w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  aria-label="Senha"
+                />
+                <ErrorMessage
+                  name="senha"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md shadow-md focus:outline-none focus:bg-blue-700 transition"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Enviando..." : "Login"}
+              </button>
+
+              {status && status.success && (
+                <div className="text-green-500 mt-4">{status.success}</div>
+              )}
+              {status && status.error && (
+                <div className="text-red-500 mt-4">{status.error}</div>
+              )}
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </main>
   );
 };
 
