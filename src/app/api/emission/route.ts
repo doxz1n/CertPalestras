@@ -25,7 +25,7 @@ export async function GET(request: Request) {
 
         // Dados do Evento
         const eventoData = eventDoc.data();
-        const nomeEvento = eventoData.nome();
+        const nomeEvento = eventoData.nome;
 
         const inscritosEvento: [] = eventoData.inscritos;
 
