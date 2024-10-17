@@ -11,10 +11,16 @@ export default function ConsultaEventos() {
   const uid = localStorage.getItem("uid");
   const router = useRouter();
 
+  const handleQr = (eventoId: any) => {
+    router.push(`/painel/qr/${eventoId}`);
+  };
+
   const fetchEventos = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/event/busca-eventos?id=${uid}`);
+      const response = await fetch(`/api/event/busca-eventos?id=${uid}`, {
+        cache: "no-store", // Força a busca de dados atualizados
+      });
       const data = await response.json();
       if (response.ok) {
         const eventos = data.eventos || [];
@@ -62,6 +68,12 @@ export default function ConsultaEventos() {
               <p className="text-gray-700 mb-4">
                 <strong>Descrição:</strong> {evento.descricao}
               </p>
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
+                onClick={() => handleQr(evento.id)}
+              >
+                Gerar QR
+              </button>
             </div>
           ))}
         </div>

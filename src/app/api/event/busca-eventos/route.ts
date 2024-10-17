@@ -37,8 +37,6 @@ export async function GET(req: Request) {
       ...doc.data(), // Inclui os dados do documento
     }));
 
-    console.log(eventos);
-
     return NextResponse.json({ eventos }, { status: 200 });
   } catch (error) {
     console.error("Erro ao buscar evento:", error);

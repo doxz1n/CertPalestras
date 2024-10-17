@@ -11,9 +11,6 @@ export default function FutureEvents() {
     router.push(`/inscricao/${eventoId}`);
   };
 
-  const handleQr = (eventoId: any) => {
-    router.push(`/qr/${eventoId}`);
-  };
   // Estado para armazenar os eventos futuros
   const [eventos, setEventos] = useState<Evento[]>([]);
   // Estado para indicar se os eventos estão sendo carregados
@@ -118,12 +115,6 @@ export default function FutureEvents() {
                     onClick={() => handleInscricao(evento.id)}
                   >
                     Inscreva-se
-                  </button>
-                  <button // Provisório
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
-                    onClick={() => handleQr(evento.id)}
-                  >
-                    Gerar QR
                   </button>
                 </div>
               </li>
