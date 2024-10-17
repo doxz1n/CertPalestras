@@ -40,13 +40,7 @@ function Header() {
             Sobre Nós
           </Link>
           <Link
-            href="/contato"
-            className="text-white font-semibold hover:text-gray-200 transition-colors"
-          >
-            Contato
-          </Link>
-          <Link
-            href="/contato"
+            href="/login"
             className="text-white font-semibold hover:text-gray-200 transition-colors"
           >
             Login Coordenadores
@@ -89,10 +83,10 @@ function Header() {
             Sobre Nós
           </Link>
           <Link
-            href="/contato"
+            href="/login"
             className="block text-white font-semibold hover:text-gray-200 transition-colors"
           >
-            Contato
+            Login Coordenadores
           </Link>
         </nav>
       )}
