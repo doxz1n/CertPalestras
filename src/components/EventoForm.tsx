@@ -115,10 +115,14 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
           </div>
 
           {status && status.success && (
-            <div className="text-green-500 text-sm">{status.success}</div>
+            <div className="mt-4 p-2 border-l-4 bg-green-100 border-green-500 text-green-900">
+              {status.success}
+            </div>
           )}
           {status && status.error && (
-            <div className="text-red-500 text-sm">{status.error}</div>
+            <div className="mt-4 p-2 border-l-4 bg-red-100 border-red-500 text-red-900">
+              {status.error}
+            </div>
           )}
 
           <div>

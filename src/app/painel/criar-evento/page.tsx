@@ -1,26 +1,33 @@
 "use client";
 
 import { Evento } from "@/utils/eventoSchema";
-import moment from "moment";
+import moment from "moment-timezone";
 import EventoForm from "@/components/EventoForm";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const dateFormat = "DD/MM/YYYY HH:mm"; // Formato esperado para as datas
-
+  const dateFormat = "DD/MM/YYYY HH:mm"; // Formato esperado para exibição
+  const router = useRouter();
   const handleSubmit = async (
     values: Evento,
     { setSubmitting, setStatus }: any
   ) => {
     try {
-      // Conversão de data
-      const dataInicioFormatada = moment(values.dataInicio).format(dateFormat);
-      const dataFimFormatada = moment(values.dataFim).format(dateFormat);
+      // Forçando o uso do fuso horário 'America/Sao_Paulo' e formatando
+      const dataInicioFormatada = moment
+        .tz(values.dataInicio, "America/Sao_Paulo")
+        .format(dateFormat);
+      const dataFimFormatada = moment
+        .tz(values.dataFim, "America/Sao_Paulo")
+        .format(dateFormat);
+
       const valoresConvertidos = {
         ...values,
         dataInicio: dataInicioFormatada,
         dataFim: dataFimFormatada,
       };
-      //Envio
+
+      // Envio
       const response = await fetch("/api/event", {
         method: "POST",
         headers: {
@@ -33,6 +40,9 @@ export default function Page() {
 
       if (response.ok) {
         setStatus({ success: "Evento criado com sucesso!" });
+        setTimeout(() => {
+          router.push("/");
+        }, 3000); // Aumenta o tempo de espera
       } else {
         setStatus({ error: result.message || "Erro ao criar evento!" });
       }
@@ -44,7 +54,7 @@ export default function Page() {
   };
 
   return (
-    <main className="flex-grow flex justify-center items-center p-4 ">
+    <main className="flex-grow flex justify-center items-center p-4">
       <div className="bg-blue-900 p-8 rounded-lg shadow-lg w-full max-w-md text-white">
         <h2 className="text-2xl font-semibold text-center mb-6">
           Criação de Evento
