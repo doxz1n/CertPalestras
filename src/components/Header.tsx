@@ -45,6 +45,12 @@ function Header() {
           >
             Contato
           </Link>
+          <Link
+            href="/contato"
+            className="text-white font-semibold hover:text-gray-200 transition-colors"
+          >
+            Login Coordenadores
+          </Link>
         </nav>
         {/* Ícone de menu para telas menores */}
         <div className="md:hidden">
