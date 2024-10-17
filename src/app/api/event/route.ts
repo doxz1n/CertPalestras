@@ -1,6 +1,13 @@
 import { db } from "@/lib/firebase";
 import eventoSchema, { Evento } from "@/utils/eventoSchema";
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import {
+  collection,
+  updateDoc,
+  getDocs,
+  addDoc,
+  arrayUnion,
+  doc,
+} from "firebase/firestore";
 import { NextResponse } from "next/server";
 import * as Yup from "yup";
 import moment from "moment";
@@ -15,7 +22,6 @@ export async function POST(request: Request) {
       abortEarly: false,
     });
     //Criar evento
-
     const dataInicioISO = moment(
       validateData.dataInicio,
       "DD/MM/YYYY HH:mm"
@@ -25,10 +31,22 @@ export async function POST(request: Request) {
       "DD/MM/YYYY HH:mm"
     ).toISOString();
 
-    await addDoc(eventosCollection, {
+    const eventoRef = await addDoc(eventosCollection, {
       ...validateData,
       dataInicio: dataInicioISO,
       dataFim: dataFimISO,
+    });
+
+    const idCoordenador = validateData.idCoordenador;
+
+    if (!idCoordenador) {
+      throw new Error("ID do coordenador não foi fornecido");
+    }
+
+    const coordRef = doc(db, "coordenadores", idCoordenador);
+
+    await updateDoc(coordRef, {
+      EventosCriados: arrayUnion(eventoRef.id),
     });
 
     return NextResponse.json(

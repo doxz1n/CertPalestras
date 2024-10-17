@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   const dateFormat = "DD/MM/YYYY HH:mm"; // Formato esperado para exibição
+  const uid = localStorage.getItem("uid");
   const router = useRouter();
   const handleSubmit = async (
     values: Evento,
@@ -25,6 +26,7 @@ export default function Page() {
         ...values,
         dataInicio: dataInicioFormatada,
         dataFim: dataFimFormatada,
+        idCoordenador: uid,
       };
 
       // Envio
