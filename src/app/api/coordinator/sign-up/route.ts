@@ -22,7 +22,6 @@ export async function POST(
       cpf,
       email,
       nome,
-      senha,
     });
 
     return NextResponse.json(

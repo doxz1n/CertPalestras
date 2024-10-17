@@ -102,6 +102,14 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
             </li>
             <li>
               <Link
+                href="/painel/cadastro-coordenador"
+                className="hover:text-blue-300"
+              >
+                Cadastro Coordenador
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/login"
                 onClick={() => localStorage.removeItem("uid")}
                 className="hover:text-blue-300"
@@ -145,6 +153,14 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
                 className="block hover:text-blue-300"
               >
                 Emitir Certificados
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/painel/cadastro-coordenador"
+                className="block hover:text-blue-300"
+              >
+                Cadastro Coordenador
               </Link>
             </li>
             <li>

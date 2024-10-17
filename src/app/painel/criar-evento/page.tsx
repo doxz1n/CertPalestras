@@ -43,7 +43,7 @@ export default function Page() {
       if (response.ok) {
         setStatus({ success: "Evento criado com sucesso!" });
         setTimeout(() => {
-          router.push("/");
+          router.push("/painel");
         }, 3000); // Aumenta o tempo de espera
       } else {
         setStatus({ error: result.message || "Erro ao criar evento!" });
