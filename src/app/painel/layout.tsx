@@ -86,14 +86,6 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
             </li>
             <li>
               <Link
-                href="/painel/inserir-presenca"
-                className="hover:text-blue-300"
-              >
-                Inserir Presença Manual
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/painel/emitir-certificados"
                 className="hover:text-blue-300"
               >
@@ -137,14 +129,6 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
                 className="block hover:text-blue-300"
               >
                 Criar Evento
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/painel/inserir-presenca"
-                className="block hover:text-blue-300"
-              >
-                Inserir Presença Manual
               </Link>
             </li>
             <li>
