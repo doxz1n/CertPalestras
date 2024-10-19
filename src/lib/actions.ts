@@ -22,7 +22,7 @@ export const atualizarEvento = async (
   eventoAtualizado: Evento
 ): Promise<void> => {
   try {
-    const response = await fetch(`/api/event/atualizar-evento?id=${id}`, {
+    const response = await fetch(`/api/event/?id=${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ export const atualizarEvento = async (
 
 export const excluirEventoPorId = async (id: string) => {
   try {
-    const response = await fetch("/api/event/excluir-evento", {
+    const response = await fetch("/api/event/", {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
