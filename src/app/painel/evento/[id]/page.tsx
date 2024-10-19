@@ -93,8 +93,13 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
         </ul>
       </div>
 
-      {/* Botões de Editar e Excluir */}
       <div className="mt-6 flex space-x-4">
+        <button
+          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-200"
+          onClick={() => router.push(`/painel/qr/${params.id}`)}
+        >
+          Gerar QR
+        </button>
         <button
           onClick={() => router.push(`/painel/editar-evento/${params.id}`)}
           className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"

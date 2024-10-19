@@ -11,10 +11,6 @@ export default function ConsultaEventos() {
   const uid = localStorage.getItem("uid");
   const router = useRouter();
 
-  const handleQr = (eventoId: any) => {
-    router.push(`/painel/qr/${eventoId}`);
-  };
-
   const handleConsulta = (eventoId: any) => {
     router.push(`/painel/evento/${eventoId}`);
   };
@@ -71,12 +67,6 @@ export default function ConsultaEventos() {
               <p className="text-gray-700 mb-4">
                 <strong>Descrição:</strong> {evento.descricao}
               </p>
-              <button
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
-                onClick={() => handleQr(evento.id)}
-              >
-                Gerar QR
-              </button>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
                 onClick={() => handleConsulta(evento.id)}
