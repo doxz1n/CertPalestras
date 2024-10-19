@@ -1,5 +1,12 @@
 import * as Yup from "yup";
 import moment from "moment";
+import type { NOMEM } from "dns";
+
+interface Inscritos {
+  cpf: string;
+  nome: string;
+  presencaValidada: boolean;
+}
 
 export interface Evento {
   id?: string; // O ID é opcional, pois ele pode ser gerado automaticamente
@@ -9,6 +16,7 @@ export interface Evento {
   nome: string;
   descricao: string;
   idCoordenador?: string;
+  inscritos?: Inscritos[];
 }
 
 // Validação do schema com Moment.js para garantir o formato correto
@@ -35,6 +43,15 @@ const eventoSchema: Yup.ObjectSchema<Evento> = Yup.object().shape({
   nome: Yup.string().required("Nome do evento é obrigatório"),
   descricao: Yup.string().required("Descrição do evento é obrigatória"),
   idCoordenador: Yup.string().optional(),
+  inscritos: Yup.array()
+    .of(
+      Yup.object().shape({
+        cpf: Yup.string().required(),
+        nome: Yup.string().required(),
+        presencaValidada: Yup.boolean().required(),
+      })
+    )
+    .optional(),
 });
 
 export default eventoSchema;

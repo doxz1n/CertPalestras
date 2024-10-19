@@ -19,6 +19,28 @@ export const obterEventoPorId = async (id: string): Promise<Evento | null> => {
   }
 };
 
+export const excluirEventoPorId = async (id: string) => {
+  try {
+    const response = await fetch("/api/event/excluir-evento", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    if (response.ok) {
+      console.log("Evento apagado com sucesso");
+    } else {
+      const error = await response.text();
+      console.error("Erro:", error);
+    }
+  } catch (error) {
+    console.error("Erro ao buscar evento:", error);
+    return null;
+  }
+};
+
 export const buscaCpfEInscricao = async (
   cpf: string,
   eventoId: string

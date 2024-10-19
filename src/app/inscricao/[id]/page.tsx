@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import InscricaoForm from "@/components/InscricaoForm";
-import { obterEventoPorId } from "../../../lib/actions";
+import { obterEventoPorId } from "@/lib/actions";
 import moment from "moment";
 
 interface EventoPageProps {

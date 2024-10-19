@@ -15,6 +15,9 @@ export default function ConsultaEventos() {
     router.push(`/painel/qr/${eventoId}`);
   };
 
+  const handleConsulta = (eventoId: any) => {
+    router.push(`/painel/evento/${eventoId}`);
+  };
   const fetchEventos = async () => {
     setIsLoading(true);
     try {
@@ -73,6 +76,12 @@ export default function ConsultaEventos() {
                 onClick={() => handleQr(evento.id)}
               >
                 Gerar QR
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
+                onClick={() => handleConsulta(evento.id)}
+              >
+                Mais detalhes
               </button>
             </div>
           ))}

@@ -26,6 +26,7 @@ export async function GET(req: Request) {
         dataFim: eventoData?.dataFim,
         nome: eventoData?.nome,
         descricao: eventoData?.descricao,
+        inscritos: eventoData?.inscritos ?? [],
       };
 
       return NextResponse.json({ evento }, { status: 200 });
