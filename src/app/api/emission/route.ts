@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import {boolean} from "yup";
+import { gerarCertificado } from '@/lib/emission';
 
 export async function GET(request: Request) {
-    // Extract the event ID from the query parameters
+    // Extrair o ID do evento dos parâmetros de consulta
     const searchParams = new URL(request.url).searchParams;
     const eventId = searchParams.get('id');
 
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
     }
 
     try {
-        // Get the event document from Firestore
+        // Obter o documento do evento no Firestore
         const eventRef = doc(db, 'eventos', eventId);
         const eventDoc = await getDoc(eventRef);
 
@@ -21,45 +21,56 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: "Evento não encontrado" }, { status: 404 });
         }
 
-        // Extract event data
+        // Extrair dados do evento
         const eventoData = eventDoc.data();
         const nomeEvento = eventoData.nome;
 
-        // Ensure 'inscritos' is an array and contains objects with 'cpf'
-        const inscritosEvento: { cpf: string, presencaValidada:boolean }[] = eventoData?.inscritos;
+        // Converter a data para o formato YYYY-MM-DD
+        const dataEvento = new Date(eventoData.dataInicio).toISOString().split('T')[0];
+
+        // Garantir que 'inscritos' seja um array e contenha objetos com 'cpf'
+        const inscritosEvento: { cpf: string, presencaValidada: boolean }[] = eventoData?.inscritos || [];
 
         if (!inscritosEvento || !Array.isArray(inscritosEvento)) {
             return NextResponse.json({ error: "Lista de inscritos não encontrada ou malformada" }, { status: 400 });
         }
 
-        // Check for validated students
-        const alunosValidados = await Promise.all(inscritosEvento.map(async (inscrito, presencaValidada) => {
-            const alunoCpf = inscrito.cpf; // Assume inscritos array contains objects with 'cpf' field
-            const alunopresenca = inscrito.presencaValidada;
+        // Verificar os alunos com presença validada
+        const alunosValidados = await Promise.all(inscritosEvento.map(async (inscrito) => {
+            const alunoCpf = inscrito.cpf;
+            const presencaValidada = inscrito.presencaValidada;
 
             try {
-                const alunoRef = doc(db, 'alunos', alunoCpf );
+                const alunoRef = doc(db, 'alunos', alunoCpf);
                 const alunoDoc = await getDoc(alunoRef);
 
                 if (!alunoDoc.exists()) {
                     console.error(`Aluno com CPF ${alunoCpf} não encontrado`);
-                    return null; // Skip this student if they don't exist
+                    return null; // Ignorar este aluno se ele não existir
                 }
 
                 const alunoData = alunoDoc.data();
-                const eventosInscritos= alunoData.eventosInscritos;
+                const eventosInscritos = alunoData.eventosInscritos;
 
-                // Find the event with validated attendance
+                // Encontrar o evento com presença validada
                 const eventoInscrito = eventosInscritos.find((inscrito: { eventoId: string, presencaValidada: boolean }) =>
-                    eventId === eventId
+                    inscrito.eventoId === eventId && inscrito.presencaValidada
                 );
 
-                // Return the validated student object if found
-                return eventoInscrito ? {
-                    nome: alunoData.nome,
-                    cpf: alunoCpf,
-                    presencaValidada: boolean,
-                } : null;
+                if (eventoInscrito) {
+                    // Gerar o certificado para o aluno com presença validada
+                    gerarCertificado(eventoInscrito);
+
+                    // Retornar o aluno validado, se encontrado
+                    return {
+                        nome: alunoData.nome,
+                        cpf: alunoCpf,
+                        nomeEvento: nomeEvento,
+                        dataEvento: dataEvento,
+                    };
+                }
+
+                return null;
 
             } catch (error) {
                 console.error(`Erro ao processar aluno com CPF ${alunoCpf}:`, error);
@@ -67,11 +78,11 @@ export async function GET(request: Request) {
             }
         }));
 
-        // Filter out null values (students without validated attendance)
+        // Filtrar valores nulos (alunos sem presença validada)
         const alunosFiltrados = alunosValidados.filter(Boolean);
 
-        // Return the event name and validated students
-        return NextResponse.json({ nomeEvento, alunos: alunosFiltrados }, { status: 200 });
+        // Retornar o nome do evento, a data formatada e os alunos validados
+        return NextResponse.json({ nomeEvento, dataEvento, alunos: alunosFiltrados }, { status: 200 });
 
     } catch (error) {
         console.error("Erro ao buscar evento e alunos:", error);
