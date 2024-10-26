@@ -1,91 +1,174 @@
-import { NextResponse } from 'next/server';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { gerarCertificado } from '@/lib/emission';
+import { NextResponse } from "next/server";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { editarTemplate } from "@/lib/emission";
+import moment from "moment";
+import JSZip from "jszip";
+import { Evento } from "@/utils/eventoSchema";
+import { Aluno } from "@/utils/alunoSchema";
+import { Coordenador } from "@/utils/coordenadorSchema";
+import InputMask from "react-input-mask";
+
+const dateFormat = "DD/MM/YYYY HH:mm";
+const CHUNK_SIZE = 5;
+
+async function fetchDocument<T>(ref: any): Promise<T | null> {
+  const docSnapshot = await getDoc(ref);
+  return docSnapshot.exists() ? (docSnapshot.data() as T) : null;
+}
+
+interface EventoInfo {
+  nomeEvento: string;
+  dataEvento: string;
+  nomeCoordenador: string;
+}
+
+async function processAlunoCertificado(
+  alunoData: Aluno,
+  eventoInfo: EventoInfo,
+  zip: JSZip,
+  fileName: string,
+  cpf: string
+) {
+  const cpfFormatado = formatCpf(cpf);
+  const certificadoDocx = await editarTemplate({
+    nomeAluno: alunoData.nome,
+    cpfAluno: cpfFormatado,
+    nomeEvento: eventoInfo.nomeEvento,
+    dataEvento: eventoInfo.dataEvento,
+    nomeCoordenador: eventoInfo.nomeCoordenador,
+  });
+
+  zip.file(fileName, certificadoDocx, { binary: false });
+}
+
+function formatCpf(cpf: string): string {
+  return cpf
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+}
 
 export async function GET(request: Request) {
-    // Extrair o ID do evento dos parâmetros de consulta
-    const searchParams = new URL(request.url).searchParams;
-    const eventId = searchParams.get('id');
+  const searchParams = new URL(request.url).searchParams;
+  const eventId = searchParams.get("id");
 
-    if (!eventId) {
-        return NextResponse.json({ error: "ID do evento não informado" }, { status: 400 });
+  if (!eventId) {
+    return NextResponse.json(
+      { error: "ID do evento não informado" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const eventRef = doc(db, "eventos", eventId);
+    const eventData = await fetchDocument<Evento>(eventRef);
+
+    if (!eventData) {
+      return NextResponse.json(
+        { error: "Evento não encontrado" },
+        { status: 404 }
+      );
     }
 
-    try {
-        // Obter o documento do evento no Firestore
-        const eventRef = doc(db, 'eventos', eventId);
-        const eventDoc = await getDoc(eventRef);
+    const {
+      nome: nomeEvento,
+      idCoordenador,
+      dataInicio,
+      dataFim,
+      inscritos = [],
+    } = eventData;
 
-        if (!eventDoc.exists()) {
-            return NextResponse.json({ error: "Evento não encontrado" }, { status: 404 });
-        }
-
-        // Extrair dados do evento
-        const eventoData = eventDoc.data();
-        const nomeEvento = eventoData.nome;
-
-        // Converter a data para o formato YYYY-MM-DD
-        const dataEvento = new Date(eventoData.dataInicio).toISOString().split('T')[0];
-
-        // Garantir que 'inscritos' seja um array e contenha objetos com 'cpf'
-        const inscritosEvento: { cpf: string, presencaValidada: boolean }[] = eventoData?.inscritos || [];
-
-        if (!inscritosEvento || !Array.isArray(inscritosEvento)) {
-            return NextResponse.json({ error: "Lista de inscritos não encontrada ou malformada" }, { status: 400 });
-        }
-
-        // Verificar os alunos com presença validada
-        const alunosValidados = await Promise.all(inscritosEvento.map(async (inscrito) => {
-            const alunoCpf = inscrito.cpf;
-            const presencaValidada = inscrito.presencaValidada;
-
-            try {
-                const alunoRef = doc(db, 'alunos', alunoCpf);
-                const alunoDoc = await getDoc(alunoRef);
-
-                if (!alunoDoc.exists()) {
-                    console.error(`Aluno com CPF ${alunoCpf} não encontrado`);
-                    return null; // Ignorar este aluno se ele não existir
-                }
-
-                const alunoData = alunoDoc.data();
-                const eventosInscritos = alunoData.eventosInscritos;
-
-                // Encontrar o evento com presença validada
-                const eventoInscrito = eventosInscritos.find((inscrito: { eventoId: string, presencaValidada: boolean }) =>
-                    inscrito.eventoId === eventId && inscrito.presencaValidada
-                );
-
-                if (eventoInscrito) {
-                    // Gerar o certificado para o aluno com presença validada
-                    gerarCertificado(eventoInscrito);
-
-                    // Retornar o aluno validado, se encontrado
-                    return {
-                        nome: alunoData.nome,
-                        cpf: alunoCpf,
-                        nomeEvento: nomeEvento,
-                        dataEvento: dataEvento,
-                    };
-                }
-
-                return null;
-
-            } catch (error) {
-                console.error(`Erro ao processar aluno com CPF ${alunoCpf}:`, error);
-                return null;
-            }
-        }));
-
-        // Filtrar valores nulos (alunos sem presença validada)
-        const alunosFiltrados = alunosValidados.filter(Boolean);
-
-        // Retornar o nome do evento, a data formatada e os alunos validados
-        return NextResponse.json({ nomeEvento, dataEvento, alunos: alunosFiltrados }, { status: 200 });
-
-    } catch (error) {
-        console.error("Erro ao buscar evento e alunos:", error);
-        return NextResponse.json({ error: "Erro ao buscar evento e alunos" }, { status: 500 });
+    if (!idCoordenador) {
+      return NextResponse.json(
+        { error: "ID do coordenador não encontrado no evento" },
+        { status: 400 }
+      );
     }
+
+    const coordenadorRef = doc(db, "coordenadores", idCoordenador);
+    const coordenadorData = await fetchDocument<Coordenador>(coordenadorRef);
+
+    if (!coordenadorData) {
+      return NextResponse.json(
+        { error: "Coordenador não encontrado" },
+        { status: 404 }
+      );
+    }
+
+    const formattedDataEvento = `${moment(dataInicio).format(
+      dateFormat
+    )} - ${moment(dataFim).format(dateFormat)}`;
+    const eventoInfo: EventoInfo = {
+      nomeEvento,
+      dataEvento: formattedDataEvento,
+      nomeCoordenador: coordenadorData.nome,
+    };
+    console.log(eventoInfo);
+
+    const zip = new JSZip();
+
+    for (let i = 0; i < inscritos.length; i += CHUNK_SIZE) {
+      const chunk = inscritos.slice(i, i + CHUNK_SIZE);
+
+      await Promise.all(
+        chunk.map(async ({ cpf, presencaValidada }) => {
+          if (!presencaValidada) return;
+
+          const alunoRef = doc(db, "alunos", cpf);
+          const alunoData = await fetchDocument<Aluno>(alunoRef);
+          console.log(alunoData);
+
+          if (!alunoData) {
+            console.error(`Aluno com CPF ${cpf} não encontrado`);
+            return;
+          }
+
+          const isPresent = alunoData.eventosInscritos?.some(
+            (e) => e.eventoId === eventId && e.presencaValidada
+          );
+
+          if (isPresent) {
+            const fileName = `${nomeEvento}_${alunoData.nome.replace(
+              /[^a-zA-Z0-9]/g,
+              "_"
+            )}.docx`;
+            await processAlunoCertificado(
+              alunoData,
+              eventoInfo,
+              zip,
+              fileName,
+              cpf
+            );
+          }
+        })
+      );
+    }
+
+    const zipContent = await zip.generateAsync({
+      type: "nodebuffer",
+      compression: "DEFLATE",
+      compressionOptions: { level: 5 },
+    });
+
+    if (zipContent.length === 0) {
+      return NextResponse.json(
+        { error: "Nenhum certificado foi gerado." },
+        { status: 404 }
+      );
+    }
+
+    return new NextResponse(zipContent, {
+      headers: {
+        "Content-Type": "application/zip",
+        "Content-Disposition": `attachment; filename="${nomeEvento}_certificados.zip"`,
+      },
+    });
+  } catch (error) {
+    console.error("Erro ao buscar evento e gerar certificados:", error);
+    return NextResponse.json(
+      { error: "Erro ao buscar evento e gerar certificados" },
+      { status: 500 }
+    );
+  }
 }
