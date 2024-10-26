@@ -1,5 +1,12 @@
 import { NextResponse } from "next/server";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 export async function GET(req: Request) {
@@ -7,35 +14,30 @@ export async function GET(req: Request) {
   const id = searchParams.get("id");
   if (!id) {
     return NextResponse.json(
-      { error: "ID do evento é obrigatório" },
+      { error: "ID do coordenador é obrigatório" },
       { status: 400 }
     );
   }
 
   try {
     // Referência ao documento do evento no Firestore
-    const eventoRef = doc(db, "eventos", id);
-    const eventoDoc = await getDoc(eventoRef);
+    const eventosRef = collection(db, "eventos");
+    const q = query(eventosRef, where("idCoordenador", "==", id));
+    const querySnapshot = await getDocs(q);
 
-    if (eventoDoc.exists()) {
-      const eventoData = eventoDoc.data();
-      const evento = {
-        id: eventoDoc.id,
-        vagas: eventoData?.vagas,
-        dataInicio: eventoData?.dataInicio,
-        dataFim: eventoData?.dataFim,
-        nome: eventoData?.nome,
-        descricao: eventoData?.descricao,
-        inscritos: eventoData?.inscritos ?? [],
-      };
-
-      return NextResponse.json({ evento }, { status: 200 });
-    } else {
+    if (!querySnapshot) {
       return NextResponse.json(
         { error: "Evento não encontrado" },
         { status: 404 }
       );
     }
+
+    const eventos = querySnapshot.docs.map((doc) => ({
+      id: doc.id, // Adiciona o ID do documento
+      ...doc.data(), // Inclui os dados do documento
+    }));
+
+    return NextResponse.json({ eventos }, { status: 200 });
   } catch (error) {
     console.error("Erro ao buscar evento:", error);
     return NextResponse.json(

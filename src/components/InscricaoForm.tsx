@@ -12,17 +12,17 @@ interface InscricaoFormProps {
 
 const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
   const [cpf, setCpf] = useState("");
-  const [cpfConfirmacao, setCpfConfirmacao] = useState(""); // Estado para confirmação de CPF
+  const [cpfConfirmacao, setCpfConfirmacao] = useState("");
   const [existeCpf, setExisteCpf] = useState(false);
   const [jaInscrito, setJaInscrito] = useState(false);
   const [nome, setNome] = useState("");
-  const [nomeConfirmacao, setNomeConfirmacao] = useState(""); // Estado para confirmação de nome
+  const [nomeConfirmacao, setNomeConfirmacao] = useState("");
   const [email, setEmail] = useState("");
-  const [emailConfirmacao, setEmailConfirmacao] = useState(""); // Estado para confirmação de e-mail
+  const [emailConfirmacao, setEmailConfirmacao] = useState("");
   const [mensagem, setMensagem] = useState("");
-  const [cpfErro, setCpfErro] = useState(""); // Estado para erros de CPF
-  const [nomeErro, setNomeErro] = useState(""); // Estado para erros de nome
-  const [emailErro, setEmailErro] = useState(""); // Estado para erros de e-mail
+  const [cpfErro, setCpfErro] = useState("");
+  const [nomeErro, setNomeErro] = useState("");
+  const [emailErro, setEmailErro] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -61,32 +61,33 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
 
     setLoading(true);
 
-    // Validação de CPF
-    if (cpfNumeros !== cpfConfirmacaoNumeros) {
-      setCpfErro("Os CPFs não coincidem.");
-      setLoading(false);
-      return;
-    }
+    if (!existeCpf) {
+      // Validação de Nome
+      if (cpfNumeros !== cpfConfirmacaoNumeros) {
+        setCpfErro("Os CPFs não coincidem.");
+        setLoading(false);
+        return;
+      }
 
-    // Validação de Nome
-    if (nome !== nomeConfirmacao) {
-      setNomeErro("Os nomes não coincidem.");
-      setLoading(false);
-      return;
-    }
+      if (nome !== nomeConfirmacao) {
+        setNomeErro("Os nomes não coincidem.");
+        setLoading(false);
+        return;
+      }
 
-    // Validação de Email
-    if (email !== emailConfirmacao) {
-      setEmailErro("Os emails não coincidem.");
-      setLoading(false);
-      return;
-    }
+      // Validação de Email
+      if (email !== emailConfirmacao) {
+        setEmailErro("Os emails não coincidem.");
+        setLoading(false);
+        return;
+      }
 
-    // Validações para CPF e email de novos usuários
-    if (!existeCpf && (email === "" || nome === "")) {
-      setMensagem("Preencha todos os campos do formulário.");
-      setLoading(false);
-      return;
+      // Validações para CPF e email de novos usuários
+      if (email === "" || nome === "") {
+        setMensagem("Preencha todos os campos do formulário.");
+        setLoading(false);
+        return;
+      }
     }
 
     try {
@@ -156,18 +157,23 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
             className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
           />
           {cpfErro && <p className="text-red-500 text-sm mt-1">{cpfErro}</p>}
-          <label htmlFor="cpfConfirmacao" className="block text-sm font-medium">
-            Confirme o CPF:
-          </label>
-          <InputMask
-            mask="999.999.999-99"
-            value={cpfConfirmacao}
-            onChange={(e) => setCpfConfirmacao(e.target.value)}
-            placeholder="Confirme seu CPF"
-            className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
-            required
-            disabled={existeCpf || loading}
-          />
+          <div hidden={existeCpf}>
+            <label
+              htmlFor="cpfConfirmacao"
+              className="block text-sm font-medium"
+            >
+              Confirme o CPF:
+            </label>
+            <InputMask
+              mask="999.999.999-99"
+              value={cpfConfirmacao}
+              onChange={(e) => setCpfConfirmacao(e.target.value)}
+              placeholder="Confirme seu CPF"
+              className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
+              required
+              disabled={loading}
+            />
+          </div>
         </div>
 
         {jaInscrito ? (
@@ -208,16 +214,6 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
                   className="mt-1 p-2 block w-full border bg-gray-900 border-gray-700 rounded-md"
                 />
               </div>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleInscricao(e);
-                }}
-                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-                disabled={loading}
-              >
-                {loading ? "Processando..." : "Confirmar Inscrição"}
-              </button>
             </div>
           </>
         ) : (
@@ -289,17 +285,20 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
               {emailErro && (
                 <p className="text-red-500 text-sm mt-1">{emailErro}</p>
               )}
-              <button
-                type="submit"
-                className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600"
-                disabled={loading}
-              >
-                {loading ? "Processando..." : "Enviar Inscrição"}
-              </button>
             </form>
           </>
         )}
-
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            handleInscricao(e);
+          }}
+          className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md disabled:opacity-50"
+          disabled={loading}
+          hidden={jaInscrito}
+        >
+          {loading ? "Processando..." : "Inscrever"}
+        </button>
         {mensagem && (
           <div
             className={`mt-4 p-2 border-l-4 ${

@@ -1,45 +1,38 @@
 "use client";
 
-import {useRouter} from "next/navigation";
-import {useEffect, useState} from "react";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-export default function Page() {
-    const router = useRouter();
-    const [token, setToken] = useState<string | null>(null);
+const isAuthenticated = () => {
+  const uid = localStorage.getItem("uid");
+  return !!uid;
+};
 
-    useEffect(() => {
-        const storedToken = localStorage.getItem("uid");
+const Painel: React.FC = () => {
+  const router = useRouter();
 
-        if (!storedToken) {
-            router.push("/login");
-        } else {
-            setToken(storedToken);
-        }
-    }, [router]);
-
-	const handleLogout = () => {
-		localStorage.removeItem("uid");
-		router.push("/login");
-	};
-
-    if (!token) {
-        return null;
-    } else {
-
-        return (
-            <div className="flex flex-col h-screen justify-between bg-blue-500">
-                <Header/>
-                <main className="bg-white dark:bg-black flex items-center justify-center flex-grow">
-			<button
-				onClick = {handleLogout}
-				className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
-				Logout
-			</button>
-                </main>
-                <Footer/>
-            </div>
-        );
+  // Redireciona para login se não autenticado
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      router.push("/login");
     }
-}
+  }, [router]);
+
+  return (
+    <main className="flex-grow container mx-auto p-6">
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <h1 className="text-3xl font-bold text-blue-900 mb-6">
+          Bem-vindo ao Painel de Controle
+        </h1>
+        <p className="text-gray-700 text-lg">
+          Utilize o menu acima para navegar entre as opções de gestão do
+          sistema. Aqui você pode consultar eventos, criar novos eventos,
+          inserir presença manualmente e emitir certificados.
+        </p>
+      </div>
+    </main>
+  );
+};
+
+export default Painel;

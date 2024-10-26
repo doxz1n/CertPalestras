@@ -1,6 +1,4 @@
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "./firebase"; // Importe a instância do Firestore
-import { Evento } from "@/utils/eventoSchema"; // Importe a interface do evento
+import { Evento } from "@/utils/eventoSchema";
 
 export const obterEventoPorId = async (id: string): Promise<Evento | null> => {
   try {
@@ -12,6 +10,57 @@ export const obterEventoPorId = async (id: string): Promise<Evento | null> => {
     } else {
       console.error(data.error || "Erro ao buscar evento.");
       return null;
+    }
+  } catch (error) {
+    console.error("Erro ao buscar evento:", error);
+    return null;
+  }
+};
+
+export const atualizarEvento = async (
+  id: string,
+  eventoAtualizado: Evento
+): Promise<void> => {
+  try {
+    const response = await fetch(`/api/event/?id=${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventoAtualizado),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Evento atualizado com sucesso:", data);
+    } else {
+      console.error(
+        "Erro ao atualizar evento:",
+        data.error || "Erro desconhecido."
+      );
+    }
+  } catch (error) {
+    console.error("Erro ao enviar solicitação para a API:", error);
+    throw new Error("Erro ao atualizar o evento.");
+  }
+};
+
+export const excluirEventoPorId = async (id: string) => {
+  try {
+    const response = await fetch("/api/event/", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    if (response.ok) {
+      console.log("Evento apagado com sucesso");
+    } else {
+      const error = await response.text();
+      console.error("Erro:", error);
     }
   } catch (error) {
     console.error("Erro ao buscar evento:", error);

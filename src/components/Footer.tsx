@@ -1,12 +1,12 @@
 function Footer() {
   return (
-    <footer className="bg-blue-500 py-4 mt-1">
-      <div className="container mx-auto p-4 text-center text-white">
-        <p>
+    <footer className="bg-blue-800 py-6">
+      <div className="container mx-auto px-4 md:px-8 text-center text-white">
+        <p className="text-sm sm:text-base">
           &copy; {new Date().getFullYear()} CertPalestras - Sistema de
           Gerenciamento e Emissão de Certificados
         </p>
-        <p>Todos os direitos reservados.</p>
+        <p className="text-xs sm:text-sm mt-2">Todos os direitos reservados.</p>
       </div>
     </footer>
   );
