@@ -1,27 +1,14 @@
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "./firebase"; // Importe a instância do Firestore
-import { Evento } from "@/utils/eventoSchema"; // Importe a interface do evento
+import { Evento } from "@/utils/eventoSchema";
 
 export const obterEventoPorId = async (id: string): Promise<Evento | null> => {
   try {
-    const eventoRef = doc(db, "eventos", id); // Referência ao documento com o ID
-    const eventoDoc = await getDoc(eventoRef); // Obtém o documento pelo ID
+    const response = await fetch(`/api/event/evento-por-id?id=${id}`);
+    const data = await response.json();
 
-    if (eventoDoc.exists()) {
-      // Converte o documento em um objeto do tipo Evento
-      const eventoData = eventoDoc.data();
-      const evento: Evento = {
-        id: eventoDoc.id,
-        vagas: eventoData?.vagas,
-        dataInicio: eventoData?.dataInicio,
-        dataFim: eventoData?.dataFim,
-        nome: eventoData?.nome,
-        descricao: eventoData?.descricao,
-      };
-
-      return evento;
+    if (response.ok && data.evento) {
+      return data.evento;
     } else {
-      console.log(`Evento com ID ${id} não encontrado.`);
+      console.error(data.error || "Erro ao buscar evento.");
       return null;
     }
   } catch (error) {
@@ -30,42 +17,84 @@ export const obterEventoPorId = async (id: string): Promise<Evento | null> => {
   }
 };
 
-export const buscaCpf = async (cpf: string): Promise<boolean> => {
+export const atualizarEvento = async (
+  id: string,
+  eventoAtualizado: Evento
+): Promise<void> => {
   try {
-    const alunoRef = doc(db, "alunos", cpf);
-    const alunoDoc = await getDoc(alunoRef);
-    return alunoDoc.exists(); // Retorna true se o documento existir
+    const response = await fetch(`/api/event/?id=${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(eventoAtualizado),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Evento atualizado com sucesso:", data);
+    } else {
+      console.error(
+        "Erro ao atualizar evento:",
+        data.error || "Erro desconhecido."
+      );
+    }
   } catch (error) {
-    console.error("Erro ao verificar CPF:", error);
-    return false;
+    console.error("Erro ao enviar solicitação para a API:", error);
+    throw new Error("Erro ao atualizar o evento.");
   }
 };
 
-export const verificaInscricao = async (
+export const excluirEventoPorId = async (id: string) => {
+  try {
+    const response = await fetch("/api/event/", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+
+    if (response.ok) {
+      console.log("Evento apagado com sucesso");
+    } else {
+      const error = await response.text();
+      console.error("Erro:", error);
+    }
+  } catch (error) {
+    console.error("Erro ao buscar evento:", error);
+    return null;
+  }
+};
+
+export const buscaCpfEInscricao = async (
   cpf: string,
   eventoId: string
-): Promise<boolean> => {
+): Promise<{
+  exists: boolean;
+  nome?: string;
+  email?: string;
+  inscrito?: boolean;
+}> => {
   try {
-    // Referência ao documento do evento
-    const eventoRef = doc(db, "eventos", eventoId);
+    const response = await fetch(
+      `/api/buscaCpfInscricao?cpf=${cpf}&eventoId=${eventoId}`
+    );
+    const data = await response.json();
 
-    // Obtém o documento do evento
-    const eventoDoc = await getDoc(eventoRef);
-
-    // Verifica se o documento existe
-    if (!eventoDoc.exists()) {
-      throw new Error("Evento não encontrado");
+    if (data.exists) {
+      return {
+        exists: true,
+        nome: data.nome,
+        email: data.email,
+        inscrito: data.inscrito,
+      };
+    } else {
+      return { exists: false };
     }
-
-    // Obtém os dados do evento
-    const eventoData = eventoDoc.data();
-
-    // Verifica se o CPF está na lista de inscritos
-    const inscritos: { nome: string; cpf: string }[] =
-      eventoData.inscritos || [];
-    return inscritos.some((inscrito) => inscrito.cpf === cpf); // Retorna true se o CPF estiver na lista
   } catch (error) {
-    console.error("Erro ao verificar inscrição:", error);
-    throw new Error("Erro ao verificar inscrição"); // Lidar com erro adequadamente
+    console.error("Erro ao verificar CPF e inscrição:", error);
+    return { exists: false };
   }
 };

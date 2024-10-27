@@ -1,6 +1,8 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import InscricaoForm from "@/components/InscricaoForm";
-import { obterEventoPorId } from "../../../lib/actions"; // Certifique-se de que o caminho está correto
-import { Evento } from "@/utils/eventoSchema";
+import { obterEventoPorId } from "@/lib/actions";
 import moment from "moment";
 
 interface EventoPageProps {
@@ -11,19 +13,46 @@ interface EventoPageProps {
 
 const dateFormat = "DD/MM/YYYY HH:mm";
 
-const EventoPage = async ({ params }: EventoPageProps) => {
-  // Usando a função obterEventoPorId diretamente
-  const evento = await obterEventoPorId(params.id);
+const EventoPage = ({ params }: EventoPageProps) => {
+  const [evento, setEvento] = useState<any>(null);
+  const [rebuildCounter, setRebuildCounter] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const handleSuccess = () => {
+    setRebuildCounter((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    const fetchEvento = async () => {
+      setLoading(true);
+      const evento = await obterEventoPorId(params.id);
+      setEvento(evento);
+      setLoading(false);
+    };
+
+    fetchEvento();
+  }, [params.id, rebuildCounter]);
+
+  if (loading) {
+    return <p className="text-center text-gray-500">Carregando evento...</p>;
+  }
+
   if (!evento) {
-    return <p>Evento não encontrado {params.id}</p>;
+    return (
+      <p className="text-center text-red-500">
+        Evento não encontrado: {params.id}
+      </p>
+    );
   }
 
   const disponivel = evento.vagas > 0;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold text-blue-500">{evento.nome}</h1>
-      <p className="text-gray-700">{evento.descricao}</p>
+    <div className="container mx-auto p-6">
+      <h1 className="text-4xl font-bold text-blue-600 text-center mb-4">
+        {evento.nome}
+      </h1>
+      <p className="text-gray-800 text-center mb-6">{evento.descricao}</p>
 
       <div className="bg-white shadow-md rounded-lg p-6">
         <p className="text-gray-600">
@@ -33,9 +62,11 @@ const EventoPage = async ({ params }: EventoPageProps) => {
         <p className="text-gray-600">Vagas: {evento.vagas}</p>
 
         {disponivel ? (
-          <InscricaoForm eventoId={evento.id!} />
+          <InscricaoForm eventoId={evento.id!} onSuccess={handleSuccess} />
         ) : (
-          <p>Não há vagas</p>
+          <p className="text-red-500 font-semibold text-lg text-center">
+            Não há vagas disponíveis
+          </p>
         )}
       </div>
     </div>

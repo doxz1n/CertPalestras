@@ -1,6 +1,14 @@
 import { db } from "@/lib/firebase";
 import eventoSchema, { Evento } from "@/utils/eventoSchema";
-import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
+import {
+  collection,
+  updateDoc,
+  getDocs,
+  addDoc,
+  arrayUnion,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { NextResponse } from "next/server";
 import * as Yup from "yup";
 import moment from "moment";
@@ -15,7 +23,6 @@ export async function POST(request: Request) {
       abortEarly: false,
     });
     //Criar evento
-
     const dataInicioISO = moment(
       validateData.dataInicio,
       "DD/MM/YYYY HH:mm"
@@ -25,10 +32,22 @@ export async function POST(request: Request) {
       "DD/MM/YYYY HH:mm"
     ).toISOString();
 
-    await addDoc(eventosCollection, {
+    const eventoRef = await addDoc(eventosCollection, {
       ...validateData,
       dataInicio: dataInicioISO,
       dataFim: dataFimISO,
+    });
+
+    const idCoordenador = validateData.idCoordenador;
+
+    if (!idCoordenador) {
+      throw new Error("ID do coordenador não foi fornecido");
+    }
+
+    const coordRef = doc(db, "coordenadores", idCoordenador);
+
+    await updateDoc(coordRef, {
+      EventosCriados: arrayUnion(eventoRef.id),
     });
 
     return NextResponse.json(
@@ -69,6 +88,62 @@ export async function GET() {
     // Retorna uma resposta de erro
     return NextResponse.json(
       { error: "Erro ao buscar eventos" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    const eventoAtualizado = await req.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "ID do evento é obrigatório" },
+        { status: 400 }
+      );
+    }
+
+    const eventoRef = doc(db, "eventos", id);
+
+    await updateDoc(eventoRef, eventoAtualizado);
+
+    return NextResponse.json(
+      { message: "Evento atualizado com sucesso" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Erro ao atualizar evento:", error);
+    return NextResponse.json(
+      { error: "Erro ao atualizar evento" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { id } = await request.json();
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Evento ID é necessário" },
+        { status: 400 }
+      );
+    }
+
+    const eventoRef = doc(db, "eventos", id);
+    await deleteDoc(eventoRef);
+    return NextResponse.json(
+      { message: "Evento excluído com sucesso" },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Erro ao excluir evento" },
       { status: 500 }
     );
   }
