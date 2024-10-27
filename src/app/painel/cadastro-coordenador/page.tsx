@@ -3,12 +3,11 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Coordenador, coordenadorSchema } from "@/utils/coordenadorSchema";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { useRouter } from "next/navigation";
 
 const RegistroCoordenador: React.FC = () => {
   const validationSchema = coordenadorSchema;
-
+  const router = useRouter();
   const initialValues: Coordenador = {
     nome: "",
     email: "",
@@ -33,6 +32,9 @@ const RegistroCoordenador: React.FC = () => {
 
       if (response.ok) {
         setStatus({ success: "Coordenador criado com sucesso!" });
+        setTimeout(() => {
+          router.push("/painel");
+        }, 3000); // Aumenta o tempo de espera
       } else {
         setStatus({ error: result.message || "Erro ao criar coordenador." });
       }

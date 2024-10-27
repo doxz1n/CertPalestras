@@ -20,6 +20,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
   const [vagas, setVagas] = useState<number>(0);
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFim, setDataFim] = useState<string>("");
+  const [horas, setHoras] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -27,6 +28,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
     const fetchEvento = async () => {
       setLoading(true);
       const eventoData = await obterEventoPorId(params.id);
+      console.log(eventoData);
       if (eventoData) {
         setEvento(eventoData);
         setNome(eventoData.nome);
@@ -34,6 +36,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
         setVagas(eventoData.vagas);
         setDataInicio(moment(eventoData.dataInicio).format(dateFormat)); // Formatar data de início
         setDataFim(moment(eventoData.dataFim).format(dateFormat)); // Formatar data de fim
+        setHoras(eventoData.horas);
       }
       setLoading(false);
     };
@@ -55,6 +58,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
         vagas,
         dataInicio: dataInicioISO,
         dataFim: dataFimISO,
+        horas,
       });
       router.push(`/painel/evento/${params.id}`); // Redireciona após atualização
     } catch (error) {
@@ -118,6 +122,17 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
             onChange={(e) => setDataFim(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg"
             placeholder="DD/MM/YYYY HH:mm"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="block text-gray-700">Horas</label>
+          <input
+            type="number"
+            value={horas}
+            onChange={(e) => setHoras(Number(e.target.value))}
+            className="w-full px-4 py-2 border rounded-lg"
             required
           />
         </div>

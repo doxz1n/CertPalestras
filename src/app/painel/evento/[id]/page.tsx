@@ -76,6 +76,9 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
       <p className="text-gray-700 mb-2">
         <strong>Vagas Disponíveis:</strong> {evento.vagas}
       </p>
+      <p className="text-gray-700 mb-2">
+        <strong>Horas de Evento:</strong> {evento.horas}
+      </p>
 
       <div className="mt-6">
         <h2 className="text-lg font-semibold">Inscritos</h2>

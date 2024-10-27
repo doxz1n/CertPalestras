@@ -13,6 +13,7 @@ interface EventoFormProps {
 const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
   const initialValues: Evento = {
     vagas: 0,
+    horas: 0,
     dataInicio: "",
     dataFim: "",
     nome: "",
@@ -90,6 +91,23 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
             />
             <ErrorMessage
               name="dataFim"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="horas" className="block text-sm font-medium">
+              Horas
+            </label>
+            <Field
+              id="horas"
+              name="horas"
+              type="number"
+              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <ErrorMessage
+              name="horas"
               component="div"
               className="text-red-500 text-sm mt-1"
             />

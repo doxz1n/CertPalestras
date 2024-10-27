@@ -21,6 +21,7 @@ interface EventoInfo {
   nomeEvento: string;
   dataEvento: string;
   nomeCoordenador: string;
+  horasEvento: number;
 }
 
 async function processAlunoCertificado(
@@ -36,6 +37,7 @@ async function processAlunoCertificado(
     cpfAluno: cpfFormatado,
     nomeEvento: eventoInfo.nomeEvento,
     dataEvento: eventoInfo.dataEvento,
+    horasEvento: eventoInfo.horasEvento,
     nomeCoordenador: eventoInfo.nomeCoordenador,
   });
 
@@ -77,6 +79,7 @@ export async function GET(request: Request) {
       dataInicio,
       dataFim,
       inscritos = [],
+      horas: horasEvento,
     } = eventData;
 
     if (!idCoordenador) {
@@ -98,13 +101,13 @@ export async function GET(request: Request) {
 
     const formattedDataEvento = `${moment(dataInicio).format(
       dateFormat
-    )} - ${moment(dataFim).format(dateFormat)}`;
+    )} a ${moment(dataFim).format(dateFormat)}`;
     const eventoInfo: EventoInfo = {
       nomeEvento,
       dataEvento: formattedDataEvento,
       nomeCoordenador: coordenadorData.nome,
+      horasEvento,
     };
-    console.log(eventoInfo);
 
     const zip = new JSZip();
 
@@ -117,7 +120,6 @@ export async function GET(request: Request) {
 
           const alunoRef = doc(db, "alunos", cpf);
           const alunoData = await fetchDocument<Aluno>(alunoRef);
-          console.log(alunoData);
 
           if (!alunoData) {
             console.error(`Aluno com CPF ${cpf} não encontrado`);

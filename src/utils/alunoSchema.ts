@@ -5,17 +5,11 @@ interface EventoInscrito {
   presencaValidada: boolean;
 }
 
-interface Certificado {
-  certificadoId: string;
-  emitidoEm: Date;
-}
-
 export interface Aluno {
   email: string;
   nome: string;
   cpf: string;
   eventosInscritos?: EventoInscrito[];
-  certificados?: Certificado[];
 }
 
 export const alunoSchema: Yup.ObjectSchema<Aluno> = Yup.object().shape({
@@ -27,14 +21,6 @@ export const alunoSchema: Yup.ObjectSchema<Aluno> = Yup.object().shape({
       Yup.object().shape({
         eventoId: Yup.string().required(),
         presencaValidada: Yup.boolean().required(),
-      })
-    )
-    .optional(),
-  certificados: Yup.array()
-    .of(
-      Yup.object().shape({
-        certificadoId: Yup.string().required(),
-        emitidoEm: Yup.date().required(),
       })
     )
     .optional(),

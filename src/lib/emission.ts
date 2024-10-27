@@ -12,6 +12,7 @@ interface CertificadoData {
   dataEvento: string;
   nomeCoordenador: string;
   dataEmissao?: string; // Data de emissão do certificado
+  horasEvento: number;
 }
 
 /**
