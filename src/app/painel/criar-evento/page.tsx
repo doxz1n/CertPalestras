@@ -15,8 +15,8 @@ export default function Page() {
   ) => {
     try {
       // Forçando o uso do fuso horário 'America/Sao_Paulo' e formatando
-      const dataInicioFormatada = moment(values.dataInicio).format("DD/MM/YYYY HH:mm");
-      const dataFimFormatada = moment(values.dataFim).format("DD/MM/YYYY HH:mm");
+      const dataInicioFormatada = new Date(values.dataInicio).toISOString();
+      const dataFimFormatada = new Date(values.dataFim).toISOString();
 
       const valoresConvertidos = {
         ...values,
