@@ -76,20 +76,12 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
                 href="/painel/consulta-eventos"
                 className="hover:text-blue-300"
               >
-                Consulta de Eventos
+                Eventos
               </Link>
             </li>
             <li>
               <Link href="/painel/criar-evento" className="hover:text-blue-300">
                 Criar Evento
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/painel/emitir-certificados"
-                className="hover:text-blue-300"
-              >
-                Emitir Certificados
               </Link>
             </li>
             <li>
@@ -106,7 +98,7 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
                 onClick={() => localStorage.removeItem("uid")}
                 className="hover:text-blue-300"
               >
-                Logout
+                Sair
               </Link>
             </li>
           </ul>
@@ -120,7 +112,7 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
                 href="/painel/consulta-eventos"
                 className="block hover:text-blue-300"
               >
-                Consulta de Eventos
+                Eventos
               </Link>
             </li>
             <li>
@@ -129,14 +121,6 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
                 className="block hover:text-blue-300"
               >
                 Criar Evento
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/painel/emitir-certificados"
-                className="block hover:text-blue-300"
-              >
-                Emitir Certificados
               </Link>
             </li>
             <li>
@@ -153,7 +137,7 @@ export default function PainelLayout({ children }: { children: ReactNode }) {
                 onClick={() => localStorage.removeItem("uid")}
                 className="block hover:text-blue-300"
               >
-                Logout
+                Sair
               </Link>
             </li>
           </ul>
