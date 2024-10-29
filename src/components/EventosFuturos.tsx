@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import moment from "moment";
 import { Evento } from "@/utils/eventoSchema";
 import { useRouter } from "next/navigation";
+import { formataData } from "@/lib/actions";
+import { format } from "path";
 
 export default function FutureEvents() {
   const router = useRouter();
@@ -99,12 +101,10 @@ export default function FutureEvents() {
                 </h3>
                 <p className="text-gray-700">{evento.descricao}</p>
                 <p className="mt-2">
-                  <strong>Início:</strong>{" "}
-                  {moment(evento.dataInicio).format("DD/MM/YYYY HH:mm")}
+                  <strong>Início:</strong> {formataData(evento.dataInicio)}
                 </p>
                 <p>
-                  <strong>Fim:</strong>{" "}
-                  {moment(evento.dataFim).format("DD/MM/YYYY HH:mm")}
+                  <strong>Fim:</strong> {formataData(evento.dataFim)}
                 </p>
                 <p>
                   <strong>Vagas:</strong> {evento.vagas}

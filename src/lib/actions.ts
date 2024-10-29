@@ -1,4 +1,5 @@
 import { Evento } from "@/utils/eventoSchema";
+import moment from "moment-timezone";
 
 export const obterEventoPorId = async (id: string): Promise<Evento | null> => {
   try {
@@ -98,3 +99,10 @@ export const buscaCpfEInscricao = async (
     return { exists: false };
   }
 };
+
+export function formataData(data: string): string {
+  const dataFormatada = moment
+    .tz(data, "America/Sao_Paulo")
+    .format("DD/MM/YYYY HH:mm");
+  return dataFormatada;
+}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { obterEventoPorId, atualizarEvento } from "@/lib/actions";
+import { obterEventoPorId, atualizarEvento, formataData } from "@/lib/actions";
 import moment from "moment";
 
 interface EditarEventoPageProps {
@@ -34,8 +34,8 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
         setNome(eventoData.nome);
         setDescricao(eventoData.descricao);
         setVagas(eventoData.vagas);
-        setDataInicio(moment(eventoData.dataInicio).format(dateFormat)); // Formatar data de início
-        setDataFim(moment(eventoData.dataFim).format(dateFormat)); // Formatar data de fim
+        setDataInicio(formataData(eventoData.dataInicio));
+        setDataFim(formataData(eventoData.dataFim));
         setHoras(eventoData.horas);
       }
       setLoading(false);

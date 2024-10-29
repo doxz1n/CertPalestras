@@ -1,7 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import eventoSchema, { Evento } from "@/utils/eventoSchema";
-import moment from "moment";
 
 interface EventoFormProps {
   onSubmit: (

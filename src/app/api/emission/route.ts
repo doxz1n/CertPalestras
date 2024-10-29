@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { editarTemplate } from "@/lib/emission";
-import moment from "moment";
 import JSZip from "jszip";
 import { Evento } from "@/utils/eventoSchema";
 import { Aluno } from "@/utils/alunoSchema";
 import { Coordenador } from "@/utils/coordenadorSchema";
 import InputMask from "react-input-mask";
+import { formataData } from "@/lib/actions";
 
 const dateFormat = "DD/MM/YYYY HH:mm";
 const CHUNK_SIZE = 5;
@@ -99,9 +99,9 @@ export async function GET(request: Request) {
       );
     }
 
-    const formattedDataEvento = `${moment(dataInicio).format(
-      dateFormat
-    )} a ${moment(dataFim).format(dateFormat)}`;
+    const formattedDataEvento = `${formataData(dataInicio)} a ${formataData(
+      dataFim
+    )}`;
     const eventoInfo: EventoInfo = {
       nomeEvento,
       dataEvento: formattedDataEvento,

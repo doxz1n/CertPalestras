@@ -2,8 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { obterEventoPorId, excluirEventoPorId } from "@/lib/actions";
-import moment from "moment";
+import {
+  obterEventoPorId,
+  excluirEventoPorId,
+  formataData,
+} from "@/lib/actions";
+import { formatWithOptions } from "util";
 
 interface EventoPageProps {
   params: {
@@ -66,12 +70,10 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
         <strong>Descrição:</strong> {evento.descricao}
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Data de Início:</strong>{" "}
-        {moment(evento.dataInicio).format(dateFormat)}
+        <strong>Data de Início:</strong> {formataData(evento.dataInicio)}
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Data de Fim:</strong>{" "}
-        {moment(evento.dataFim).format(dateFormat)}
+        <strong>Data de Fim:</strong> {formataData(evento.dataFim)}
       </p>
       <p className="text-gray-700 mb-2">
         <strong>Vagas Disponíveis:</strong> {evento.vagas}

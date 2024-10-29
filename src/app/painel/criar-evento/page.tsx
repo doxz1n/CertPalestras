@@ -1,9 +1,9 @@
 "use client";
 
 import { Evento } from "@/utils/eventoSchema";
-import moment from "moment-timezone";
 import EventoForm from "@/components/EventoForm";
 import { useRouter } from "next/navigation";
+import { formataData } from "@/lib/actions";
 
 export default function Page() {
   const dateFormat = "DD/MM/YYYY HH:mm"; // Formato esperado para exibição
@@ -15,12 +15,8 @@ export default function Page() {
   ) => {
     try {
       // Forçando o uso do fuso horário 'America/Sao_Paulo' e formatando
-      const dataInicioFormatada = moment
-        .tz(values.dataInicio, "America/Sao_Paulo")
-        .format(dateFormat);
-      const dataFimFormatada = moment
-        .tz(values.dataFim, "America/Sao_Paulo")
-        .format(dateFormat);
+      const dataInicioFormatada = formataData(values.dataInicio);
+      const dataFimFormatada = formataData(values.dataFim);
 
       const valoresConvertidos = {
         ...values,
