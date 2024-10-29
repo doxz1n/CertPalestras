@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Evento } from "@/utils/eventoSchema";
 import { useRouter } from "next/navigation";
-import moment from "moment";
+import { formataData } from "@/lib/actions";
 
 export default function ConsultaEventos() {
   const [eventos, setEventos] = useState<Evento[]>([]);
@@ -57,9 +57,8 @@ export default function ConsultaEventos() {
                 {evento.nome}
               </h2>
               <p className="text-gray-700">
-                <strong>Data:</strong>{" "}
-                {moment(evento.dataInicio).format("DD/MM/YYYY HH:mm")} -{" "}
-                {moment(evento.dataFim).format("DD/MM/YYYY HH:mm")}
+                <strong>Data:</strong> {formataData(evento.dataInicio)} -{" "}
+                {formataData(evento.dataFim)}
               </p>
               <p className="text-gray-700">
                 <strong>Vagas:</strong> {evento.vagas}

@@ -4,18 +4,12 @@ interface EventoCriado {
   eventoId: string;
 }
 
-interface CertificadoEmitido {
-  certificadoId: string;
-  emitidoEm: Date;
-}
-
 export interface Coordenador {
   email: string;
   nome: string;
   cpf: string;
   senha: string;
   eventosCriados?: EventoCriado[];
-  certificadosEmitidos?: CertificadoEmitido[];
 }
 
 export const coordenadorSchema: Yup.ObjectSchema<Coordenador> =
@@ -35,14 +29,6 @@ export const coordenadorSchema: Yup.ObjectSchema<Coordenador> =
       .of(
         Yup.object().shape({
           eventoId: Yup.string().required(),
-        })
-      )
-      .optional(),
-    certificadosEmitidos: Yup.array()
-      .of(
-        Yup.object().shape({
-          certificadoId: Yup.string().required(),
-          emitidoEm: Yup.date().required(),
         })
       )
       .optional(),

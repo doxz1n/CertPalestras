@@ -26,6 +26,7 @@ export async function GET(req: Request) {
         dataFim: eventoData?.dataFim,
         nome: eventoData?.nome,
         descricao: eventoData?.descricao,
+        horas: eventoData?.horas,
         inscritos: eventoData?.inscritos ?? [],
       };
 

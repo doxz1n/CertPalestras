@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import InscricaoForm from "@/components/InscricaoForm";
-import { obterEventoPorId } from "@/lib/actions";
-import moment from "moment";
+import { formataData, obterEventoPorId } from "@/lib/actions";
 
 interface EventoPageProps {
   params: {
@@ -56,8 +55,7 @@ const EventoPage = ({ params }: EventoPageProps) => {
 
       <div className="bg-white shadow-md rounded-lg p-6">
         <p className="text-gray-600">
-          Data: {moment(evento.dataInicio).format(dateFormat)} -{" "}
-          {moment(evento.dataFim).format(dateFormat)}
+          Data: {formataData(evento.dataInicio)} - {formataData(evento.dataFim)}
         </p>
         <p className="text-gray-600">Vagas: {evento.vagas}</p>
 

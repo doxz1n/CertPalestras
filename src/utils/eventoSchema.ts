@@ -1,6 +1,5 @@
 import * as Yup from "yup";
 import moment from "moment";
-import type { NOMEM } from "dns";
 
 interface Inscritos {
   cpf: string;
@@ -17,6 +16,7 @@ export interface Evento {
   descricao: string;
   idCoordenador?: string;
   inscritos?: Inscritos[];
+  horas: number;
 }
 
 // Validação do schema com Moment.js para garantir o formato correto
@@ -42,6 +42,7 @@ const eventoSchema: Yup.ObjectSchema<Evento> = Yup.object().shape({
     }),
   nome: Yup.string().required("Nome do evento é obrigatório"),
   descricao: Yup.string().required("Descrição do evento é obrigatória"),
+  horas: Yup.number().required("Número de horas é obrigatório"),
   idCoordenador: Yup.string().optional(),
   inscritos: Yup.array()
     .of(
