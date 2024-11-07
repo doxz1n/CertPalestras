@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { obterEventoPorId, atualizarEvento, converteISO } from "@/lib/actions";
+import { obterEventoPorId, atualizarEvento } from "@/lib/actions";
 import moment from "moment-timezone";
 
 interface EditarEventoPageProps {
@@ -59,17 +59,13 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Formata as datas
-    const dataInicioFormatada = moment(dataInicio).format("DD/MM/YYYY HH:mm");
-    const dataFimFormatada = moment(dataFim).format("DD/MM/YYYY HH:mm");
-    // Converter as datas do formulário de volta para o formato ISO
     try {
       await atualizarEvento(params.id, {
         nome,
         descricao,
         vagas,
-        dataInicio: dataInicioFormatada,
-        dataFim: dataFimFormatada,
+        dataInicio,
+        dataFim,
         horas,
       });
       router.push(`/painel/evento/${params.id}`); // Redireciona após atualização

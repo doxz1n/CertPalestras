@@ -13,14 +13,8 @@ export default function Page() {
     { setSubmitting, setStatus }: any
   ) => {
     try {
-      // Forçando o uso do fuso horário 'America/Sao_Paulo' e formatando
-      const dataInicioFormatada = moment(values.dataInicio).format("DD/MM/YYYY HH:mm");
-      const dataFimFormatada = moment(values.dataFim).format("DD/MM/YYYY HH:mm");
-
       const valoresConvertidos = {
         ...values,
-        dataInicio: dataInicioFormatada,
-        dataFim: dataFimFormatada,
         idCoordenador: uid,
       };
 
