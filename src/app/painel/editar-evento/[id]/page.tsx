@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { obterEventoPorId, atualizarEvento } from "@/lib/actions";
-import moment from "moment-timezone";
 
 interface EditarEventoPageProps {
   params: {
@@ -34,16 +33,8 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
           setNome(eventoData.nome);
           setDescricao(eventoData.descricao);
           setVagas(eventoData.vagas);
-          setDataInicio(
-            moment
-              .tz(eventoData.dataInicio, "America/Sao_Paulo")
-              .format("YYYY-MM-DDTHH:mm")
-          );
-          setDataFim(
-            moment
-              .tz(eventoData.dataFim, "America/Sao_Paulo")
-              .format("YYYY-MM-DDTHH:mm")
-          );
+          setDataInicio(eventoData.dataInicio);
+          setDataFim(eventoData.dataFim);
           setHoras(eventoData.horas);
         }
       } catch (err) {

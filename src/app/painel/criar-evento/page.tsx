@@ -3,7 +3,6 @@
 import { Evento } from "@/utils/eventoSchema";
 import EventoForm from "@/components/EventoForm";
 import { useRouter } from "next/navigation";
-import moment from "moment-timezone";
 
 export default function Page() {
   const uid = localStorage.getItem("uid");
