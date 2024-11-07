@@ -105,7 +105,8 @@ export function obterFusoHorarioDoUsuario(): string {
 }
 
 export function formataData(data: string): string {
-  return moment.tz(data, "America/Sao_Paulo").format("DD/MM/YYYY HH:mm");
+  const timezone = moment.tz.guess();
+  return moment.tz(data, timezone).format("DD/MM/YYYY HH:mm");
 }
 
 export function converteISO(data: string): string {
