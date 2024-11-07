@@ -3,7 +3,7 @@
 import { Evento } from "@/utils/eventoSchema";
 import EventoForm from "@/components/EventoForm";
 import { useRouter } from "next/navigation";
-import { formataData } from "@/lib/actions";
+import moment from "moment-timezone";
 
 export default function Page() {
   const uid = localStorage.getItem("uid");
@@ -14,8 +14,8 @@ export default function Page() {
   ) => {
     try {
       // Forçando o uso do fuso horário 'America/Sao_Paulo' e formatando
-      const dataInicioFormatada = formataData(values.dataInicio);
-      const dataFimFormatada = formataData(values.dataFim);
+      const dataInicioFormatada = moment(values.dataInicio).format("DD/MM/YYYY HH:mm");
+      const dataFimFormatada = moment(values.dataFim).format("DD/MM/YYYY HH:mm");
 
       const valoresConvertidos = {
         ...values,
