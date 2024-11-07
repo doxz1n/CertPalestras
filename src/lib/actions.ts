@@ -105,8 +105,7 @@ export function obterFusoHorarioDoUsuario(): string {
 }
 
 export function formataData(data: string): string {
-  const timezone = moment.tz.guess();
-  return moment.tz(data, timezone).format("DD/MM/YYYY HH:mm");
+  return moment(data).format("DD/MM/YYYY HH:mm");
 }
 
 export function converteISO(data: string): string {
