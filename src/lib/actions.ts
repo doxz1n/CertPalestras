@@ -110,5 +110,5 @@ export function formataData(data: string): string {
 
 export function converteISO(data: string): string {
   const timezone = moment.tz.guess();
-  return moment.tz(data, timezone, "DD/MM/YYYY HH:mm").toISOString();
+  return moment.tz(data, "DD/MM/YYYY HH:mm", timezone).toISOString();
 }
