@@ -105,5 +105,5 @@ export function formataData(data: string): string {
 }
 
 export function converteISO(data: string): string {
-  return moment(data, "DD/MM/YYYY HH:mm").toISOString();
+  return moment.tz(data, "America/Sao_Paulo").toISOString();
 }
