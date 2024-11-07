@@ -2,13 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  obterEventoPorId,
-  atualizarEvento,
-  formataData,
-  converteISO,
-} from "@/lib/actions";
-import moment from "moment";
+import { obterEventoPorId, atualizarEvento, converteISO } from "@/lib/actions";
+import moment from "moment-timezone";
 
 interface EditarEventoPageProps {
   params: {
@@ -40,9 +35,15 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
           setDescricao(eventoData.descricao);
           setVagas(eventoData.vagas);
           setDataInicio(
-            moment(eventoData.dataInicio).format("YYYY-MM-DDTHH:mm")
+            moment
+              .tz(eventoData.dataInicio, "America/Sao_Paulo")
+              .format("YYYY-MM-DDTHH:mm")
           );
-          setDataFim(moment(eventoData.dataFim).format("YYYY-MM-DDTHH:mm"));
+          setDataFim(
+            moment
+              .tz(eventoData.dataFim, "America/Sao_Paulo")
+              .format("YYYY-MM-DDTHH:mm")
+          );
           setHoras(eventoData.horas);
         }
       } catch (err) {
@@ -59,20 +60,16 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
     e.preventDefault();
 
     // Formata as datas
-    const dataInicioFormatada = formataData(dataInicio);
-    const dataFimFormatada = formataData(dataFim);
-
+    const dataInicioFormatada = moment(dataInicio).format("DD/MM/YYYY HH:mm");
+    const dataFimFormatada = moment(dataFim).format("DD/MM/YYYY HH:mm");
     // Converter as datas do formulário de volta para o formato ISO
-    const dataInicioISO = converteISO(dataInicioFormatada);
-    const dataFimISO = converteISO(dataFimFormatada);
-
     try {
       await atualizarEvento(params.id, {
         nome,
         descricao,
         vagas,
-        dataInicio: dataInicioISO,
-        dataFim: dataFimISO,
+        dataInicio: dataInicioFormatada,
+        dataFim: dataFimFormatada,
         horas,
       });
       router.push(`/painel/evento/${params.id}`); // Redireciona após atualização

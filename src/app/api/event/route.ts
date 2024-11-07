@@ -25,7 +25,10 @@ export async function POST(request: Request) {
     //Criar evento
     const dataInicioUTC = converteISO(validateData.dataInicio);
     const dataFimUTC = converteISO(validateData.dataFim);
-
+    console.log(validateData.dataFim);
+    console.log(validateData.dataInicio);
+    console.log(dataFimUTC);
+    console.log(dataInicioUTC);
     const eventoRef = await addDoc(eventosCollection, {
       ...validateData,
       dataInicio: dataInicioUTC,
@@ -91,7 +94,15 @@ export async function PUT(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    const eventoAtualizado = await req.json();
+    let evento = await req.json();
+
+    const dataInicioUTC = converteISO(evento.dataInicio);
+    const dataFimUTC = converteISO(evento.dataFim);
+
+    evento = {
+      dataInicio: dataInicioUTC,
+      dataFim: dataFimUTC,
+    };
 
     if (!id) {
       return NextResponse.json(
@@ -102,8 +113,7 @@ export async function PUT(req: Request) {
 
     const eventoRef = doc(db, "eventos", id);
 
-    await updateDoc(eventoRef, eventoAtualizado);
-
+    await updateDoc(eventoRef, evento);
     return NextResponse.json(
       { message: "Evento atualizado com sucesso" },
       { status: 200 }
