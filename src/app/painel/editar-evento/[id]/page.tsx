@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { obterEventoPorId, atualizarEvento, formataData } from "@/lib/actions";
+import {
+  obterEventoPorId,
+  atualizarEvento,
+  formataData,
+  converteISO,
+} from "@/lib/actions";
 import moment from "moment";
 
 interface EditarEventoPageProps {
@@ -10,8 +15,6 @@ interface EditarEventoPageProps {
     id: string;
   };
 }
-
-const dateFormat = "DD/MM/YYYY HH:mm";
 
 const EditarEvento = ({ params }: EditarEventoPageProps) => {
   const [evento, setEvento] = useState<any>(null);
@@ -22,21 +25,29 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
   const [dataFim, setDataFim] = useState<string>("");
   const [horas, setHoras] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null); // Para mensagens de erro
   const router = useRouter();
 
   useEffect(() => {
     const fetchEvento = async () => {
       setLoading(true);
-      const eventoData = await obterEventoPorId(params.id);
-      console.log(eventoData);
-      if (eventoData) {
-        setEvento(eventoData);
-        setNome(eventoData.nome);
-        setDescricao(eventoData.descricao);
-        setVagas(eventoData.vagas);
-        setDataInicio(formataData(eventoData.dataInicio));
-        setDataFim(formataData(eventoData.dataFim));
-        setHoras(eventoData.horas);
+      try {
+        const eventoData = await obterEventoPorId(params.id);
+        console.log(eventoData);
+        if (eventoData) {
+          setEvento(eventoData);
+          setNome(eventoData.nome);
+          setDescricao(eventoData.descricao);
+          setVagas(eventoData.vagas);
+          setDataInicio(
+            moment(eventoData.dataInicio).format("YYYY-MM-DDTHH:mm")
+          );
+          setDataFim(moment(eventoData.dataFim).format("YYYY-MM-DDTHH:mm"));
+          setHoras(eventoData.horas);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar evento:", err);
+        setError("Erro ao buscar evento.");
       }
       setLoading(false);
     };
@@ -47,9 +58,13 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Formata as datas
+    const dataInicioFormatada = formataData(dataInicio);
+    const dataFimFormatada = formataData(dataFim);
+
     // Converter as datas do formulário de volta para o formato ISO
-    const dataInicioISO = moment(dataInicio, dateFormat).toISOString();
-    const dataFimISO = moment(dataFim, dateFormat).toISOString();
+    const dataInicioISO = converteISO(dataInicioFormatada);
+    const dataFimISO = converteISO(dataFimFormatada);
 
     try {
       await atualizarEvento(params.id, {
@@ -63,6 +78,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
       router.push(`/painel/evento/${params.id}`); // Redireciona após atualização
     } catch (error) {
       console.error("Erro ao atualizar evento:", error);
+      setError("Erro ao atualizar evento."); // Mensagem de erro
     }
   };
 
@@ -73,6 +89,8 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-semibold mb-4">Editar Evento</h1>
+      {error && <p className="text-red-500">{error}</p>}{" "}
+      {/* Exibe mensagens de erro */}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-gray-700">Nome do Evento</label>
@@ -106,22 +124,20 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
         <div className="mb-4">
           <label className="block text-gray-700">Data de Início</label>
           <input
-            type="text"
+            type="datetime-local"
             value={dataInicio}
             onChange={(e) => setDataInicio(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg"
-            placeholder="DD/MM/YYYY HH:mm"
             required
           />
         </div>
         <div className="mb-4">
           <label className="block text-gray-700">Data de Fim</label>
           <input
-            type="text"
+            type="datetime-local"
             value={dataFim}
             onChange={(e) => setDataFim(e.target.value)}
             className="w-full px-4 py-2 border rounded-lg"
-            placeholder="DD/MM/YYYY HH:mm"
             required
           />
         </div>

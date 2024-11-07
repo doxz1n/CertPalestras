@@ -11,7 +11,7 @@ import {
 } from "firebase/firestore";
 import { NextResponse } from "next/server";
 import * as Yup from "yup";
-import moment from "moment";
+import { converteISO } from "@/lib/actions";
 
 const eventosCollection = collection(db, "eventos"); //Coleção Eventos
 
@@ -23,19 +23,13 @@ export async function POST(request: Request) {
       abortEarly: false,
     });
     //Criar evento
-    const dataInicioISO = moment(
-      validateData.dataInicio,
-      "DD/MM/YYYY HH:mm"
-    ).toISOString();
-    const dataFimISO = moment(
-      validateData.dataFim,
-      "DD/MM/YYYY HH:mm"
-    ).toISOString();
+    const dataInicioUTC = converteISO(validateData.dataInicio);
+    const dataFimUTC = converteISO(validateData.dataFim);
 
     const eventoRef = await addDoc(eventosCollection, {
       ...validateData,
-      dataInicio: dataInicioISO,
-      dataFim: dataFimISO,
+      dataInicio: dataInicioUTC,
+      dataFim: dataFimUTC,
     });
 
     const idCoordenador = validateData.idCoordenador;

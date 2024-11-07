@@ -101,8 +101,9 @@ export const buscaCpfEInscricao = async (
 };
 
 export function formataData(data: string): string {
-  const dataFormatada = moment
-    .tz(data, "America/Sao_Paulo")
-    .format("DD/MM/YYYY HH:mm");
-  return dataFormatada;
+  return moment.tz(data, "America/Sao_Paulo").format("DD/MM/YYYY HH:mm");
+}
+
+export function converteISO(data: string): string {
+  return moment(data, "DD/MM/YYYY HH:mm").toISOString();
 }

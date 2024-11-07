@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { formataData } from "@/lib/actions";
 
 export default function Page() {
-  const dateFormat = "DD/MM/YYYY HH:mm"; // Formato esperado para exibição
   const uid = localStorage.getItem("uid");
   const router = useRouter();
   const handleSubmit = async (

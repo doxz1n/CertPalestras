@@ -112,6 +112,12 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
           Gerar QR
         </button>
         <button
+          className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition duration-200"
+          onClick={() => router.push(`/painel/presenca-manual/${params.id}`)}
+        >
+          Presença Manual
+        </button>
+        <button
           className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-200"
           onClick={() => router.push(`/api/emission?id=${params.id}`)}
         >
