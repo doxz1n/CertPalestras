@@ -100,8 +100,13 @@ export const buscaCpfEInscricao = async (
   }
 };
 
+export function obterFusoHorarioDoUsuario(): string {
+  return moment.tz.guess();
+}
+
 export function formataData(data: string): string {
-  return moment.tz(data, "America/Los_Angeles").format("DD/MM/YYYY HH:mm");
+  const timezone = moment.tz.guess();
+  return moment.tz(data, timezone).format("DD/MM/YYYY HH:mm");
 }
 
 export function converteISO(data: string): string {
