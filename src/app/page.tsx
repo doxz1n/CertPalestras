@@ -17,9 +17,9 @@ function Home() {
       <section className="mb-10">
         <h2 className="text-3xl font-semibold">O que oferecemos</h2>
         <p className="mt-2 text-gray-600">
-          Nossa plataforma oferece uma maneira simples de organizar eventos,
-          inscrever participantes e validar presenças. Além disso, você pode
-          emitir certificados personalizados com facilidade.
+          Nossa plataforma oferece uma solução simples e eficaz para gerenciar a
+          inscrição, validar a presença e emitir certificados para participantes
+          em eventos.
         </p>
       </section>
 

@@ -50,15 +50,24 @@ export default function ConsultaEventos() {
           Carregando eventos...
         </div>
       ) : eventos.length != 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-6">
           {eventos.map((evento) => (
             <div key={evento.id} className="bg-white shadow-md rounded-lg p-4">
               <h2 className="text-xl font-semibold text-blue-900">
                 {evento.nome}
               </h2>
               <p className="text-gray-700">
-                <strong>Data:</strong> {formataData(evento.dataInicio)} -{" "}
+                <strong>Início das Inscrições:</strong>{" "}
+                {formataData(evento.dataInicio)}
+              </p>
+              <p className="text-gray-700">
+                <strong>Fim das Inscrições:</strong>{" "}
                 {formataData(evento.dataFim)}
+              </p>
+              <p className="text-gray-700">
+                <strong>Data Evento:</strong>
+                {""}
+                {formataData(evento.dataEvento)}
               </p>
               <p className="text-gray-700">
                 <strong>Vagas:</strong> {evento.vagas}

@@ -12,6 +12,7 @@ export interface Evento {
   vagas: number;
   dataInicio: string; // Usando string para armazenar a data formatada
   dataFim: string;
+  dataEvento: string;
   nome: string;
   descricao: string;
   idCoordenador?: string;
@@ -33,6 +34,14 @@ const eventoSchema: Yup.ObjectSchema<Evento> = Yup.object().shape({
       );
     }),
   dataFim: Yup.string()
+    .required("Data de fim é obrigatória")
+    .test("dataFim", "Data de fim inválida", (value) => {
+      return (
+        moment(value, "YYYY-MM-DDTHH:mm", true).isValid() ||
+        moment(value, "DD/MM/YYYY HH:mm", true).isValid()
+      );
+    }),
+  dataEvento: Yup.string()
     .required("Data de fim é obrigatória")
     .test("dataFim", "Data de fim inválida", (value) => {
       return (

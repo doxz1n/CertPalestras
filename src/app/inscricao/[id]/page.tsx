@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import InscricaoForm from "@/components/InscricaoForm";
 import { formataData, obterEventoPorId } from "@/lib/actions";
+import moment from "moment";
 
 interface EventoPageProps {
   params: {
@@ -10,12 +11,12 @@ interface EventoPageProps {
   };
 }
 
-const dateFormat = "DD/MM/YYYY HH:mm";
-
 const EventoPage = ({ params }: EventoPageProps) => {
   const [evento, setEvento] = useState<any>(null);
   const [rebuildCounter, setRebuildCounter] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [encerrado, setEncerrado] = useState(false);
+  const [naoComecou, setNaoComecou] = useState(false);
 
   const handleSuccess = () => {
     setRebuildCounter((prev) => prev + 1);
@@ -25,6 +26,10 @@ const EventoPage = ({ params }: EventoPageProps) => {
     const fetchEvento = async () => {
       setLoading(true);
       const evento = await obterEventoPorId(params.id);
+      if (evento) {
+        setEncerrado(moment().isAfter(evento.dataFim));
+        setNaoComecou(moment().isBefore(evento.dataInicio));
+      }
       setEvento(evento);
       setLoading(false);
     };
@@ -55,16 +60,26 @@ const EventoPage = ({ params }: EventoPageProps) => {
 
       <div className="bg-white shadow-md rounded-lg p-6">
         <p className="text-gray-600">
-          Data: {formataData(evento.dataInicio)} - {formataData(evento.dataFim)}
+          Período de Inscrição: {formataData(evento.dataInicio)} -{" "}
+          {formataData(evento.dataFim)}
+        </p>
+        <p className="text-gray-600">
+          Data do Evento: {formataData(evento.dataEvento)}
         </p>
         <p className="text-gray-600">Vagas: {evento.vagas}</p>
 
-        {disponivel ? (
-          <InscricaoForm eventoId={evento.id!} onSuccess={handleSuccess} />
+        {!naoComecou ? (
+          encerrado ? (
+            <p className="text-red-500">As inscrições já encerraram.</p>
+          ) : disponivel ? (
+            <InscricaoForm eventoId={evento.id!} onSuccess={handleSuccess} />
+          ) : (
+            <p className="text-red-500 font-semibold text-lg text-center">
+              Não há vagas disponíveis
+            </p>
+          )
         ) : (
-          <p className="text-red-500 font-semibold text-lg text-center">
-            Não há vagas disponíveis
-          </p>
+          <p className="text-red-500">As inscrições ainda não começaram.</p>
         )}
       </div>
     </div>

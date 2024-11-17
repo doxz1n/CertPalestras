@@ -17,6 +17,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
   const [vagas, setVagas] = useState<number>(0);
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFim, setDataFim] = useState<string>("");
+  const [dataEvento, setDataEvento] = useState<string>("");
   const [horas, setHoras] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null); // Para mensagens de erro
@@ -35,6 +36,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
           setVagas(eventoData.vagas);
           setDataInicio(eventoData.dataInicio);
           setDataFim(eventoData.dataFim);
+          setDataEvento(eventoData.dataEvento);
           setHoras(eventoData.horas);
         }
       } catch (err) {
@@ -57,6 +59,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
         vagas,
         dataInicio,
         dataFim,
+        dataEvento,
         horas,
       });
       router.push(`/painel/evento/${params.id}`); // Redireciona após atualização
@@ -106,7 +109,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Data de Início</label>
+          <label className="block text-gray-700">Início das Inscrições</label>
           <input
             type="datetime-local"
             value={dataInicio}
@@ -116,7 +119,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Data de Fim</label>
+          <label className="block text-gray-700">Fim das Inscriçoes</label>
           <input
             type="datetime-local"
             value={dataFim}
@@ -125,9 +128,19 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
             required
           />
         </div>
+        <div className="mb-4">
+          <label className="block text-gray-700">Data do Evento</label>
+          <input
+            type="datetime-local"
+            value={dataEvento}
+            onChange={(e) => setDataEvento(e.target.value)}
+            className="w-full px-4 py-2 border rounded-lg"
+            required
+          />
+        </div>
 
         <div className="mb-4">
-          <label className="block text-gray-700">Horas</label>
+          <label className="block text-gray-700">Horas do Certificado</label>
           <input
             type="number"
             value={horas}

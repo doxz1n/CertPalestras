@@ -76,8 +76,7 @@ export async function GET(request: Request) {
     const {
       nome: nomeEvento,
       idCoordenador,
-      dataInicio,
-      dataFim,
+      dataEvento,
       inscritos = [],
       horas: horasEvento,
     } = eventData;
@@ -99,9 +98,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const formattedDataEvento = `${formataData(dataInicio)} a ${formataData(
-      dataFim
-    )}`;
+    const formattedDataEvento = `${formataData(dataEvento)}`;
     const eventoInfo: EventoInfo = {
       nomeEvento,
       dataEvento: formattedDataEvento,

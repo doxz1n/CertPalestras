@@ -14,6 +14,7 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
     horas: 0,
     dataInicio: "",
     dataFim: "",
+    dataEvento: "",
     nome: "",
     descricao: "",
   };
@@ -62,7 +63,7 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
 
           <div>
             <label htmlFor="dataInicio" className="block text-sm font-medium">
-              Data de Início
+              Início das Inscrições
             </label>
             <Field
               id="dataInicio"
@@ -79,7 +80,7 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
 
           <div>
             <label htmlFor="dataFim" className="block text-sm font-medium">
-              Data de Fim
+              Fim das Inscriçoes
             </label>
             <Field
               id="dataFim"
@@ -93,16 +94,33 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
               className="text-red-500 text-sm mt-1"
             />
           </div>
+          <div>
+            <label htmlFor="dataEvento" className="block text-sm font-medium">
+              Data do Evento
+            </label>
+            <Field
+              id="dataEvento"
+              name="dataEvento"
+              type="datetime-local"
+              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <ErrorMessage
+              name="dataEvento"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
 
           <div>
             <label htmlFor="horas" className="block text-sm font-medium">
-              Horas
+              Horas do Certificado
             </label>
             <Field
               id="horas"
               name="horas"
               type="number"
               className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Quantidade de horas para o certificado"
             />
             <ErrorMessage
               name="horas"

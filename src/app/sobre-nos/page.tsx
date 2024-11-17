@@ -5,10 +5,10 @@ function About() {
     <main className="container mx-auto p-6">
       <h2 className="text-4xl font-bold text-gray-900 mb-6">Sobre Nós</h2>
       <p className="text-lg text-gray-700 mb-10">
-        Somos uma equipe dedicada a fornecer soluções eficazes para
-        gerenciamento e emissão de certificados. Nossa missão é facilitar a
-        administração de certificados de forma segura e eficiente, atendendo às
-        necessidades dos nossos clientes com qualidade e confiabilidade.
+        Somos uma equipe dedicada a fornecer soluções para a gestão de
+        inscrições, validação de presença e emissão de certificados. Nossa
+        missão é simplificar esses processos, garantindo eficiência e
+        confiabilidade para atender às necessidades de nossos clientes.
       </p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Henrique Alcici */}

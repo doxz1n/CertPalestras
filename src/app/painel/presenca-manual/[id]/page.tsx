@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-
+import { buscaCpfEInscricao } from "@/lib/actions";
 interface PageProps {
   params: {
     id: string;
@@ -14,6 +14,17 @@ export default function Presenca({ params }: PageProps) {
   const [loading, setLoading] = useState(false);
   const eventoId = params.id;
 
+  const handleBlurCpf = async () => {
+    try {
+      const aluno = await buscaCpfEInscricao(cpf, eventoId);
+      if (aluno.exists) {
+        setNome(aluno.nome ?? "");
+        setEmail(aluno.email ?? "");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   // Função para submeter a presença
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,6 +48,9 @@ export default function Presenca({ params }: PageProps) {
 
       if (response.ok) {
         setStatusMessage("Presença registrada com sucesso!");
+        setCpf("");
+        setEmail("");
+        setNome("");
       } else {
         setStatusMessage(data.error || "Erro ao registrar presença.");
       }
@@ -70,7 +84,12 @@ export default function Presenca({ params }: PageProps) {
               type="text"
               id="cpf"
               value={cpf}
-              onChange={(e) => setCpf(e.target.value)}
+              onChange={(e) => {
+                setCpf(e.target.value);
+                setNome("");
+                setEmail("");
+              }}
+              onBlur={handleBlurCpf}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Digite o CPF do aluno"
               required

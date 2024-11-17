@@ -24,6 +24,7 @@ export async function GET(req: Request) {
         vagas: eventoData?.vagas,
         dataInicio: eventoData?.dataInicio,
         dataFim: eventoData?.dataFim,
+        dataEvento: eventoData?.dataEvento,
         nome: eventoData?.nome,
         descricao: eventoData?.descricao,
         horas: eventoData?.horas,

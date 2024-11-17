@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import QRCodeDisplay from "@/components/QRCodeDisplay";
-
 interface PageProps {
   params: {
     id: string;

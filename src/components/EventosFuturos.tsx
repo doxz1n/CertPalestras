@@ -48,10 +48,11 @@ export default function FutureEvents() {
       // Filtra eventos futuros e ordena por data de início
       const eventosFuturos = eventos
         .filter(
-          (evento: Evento) => moment(evento.dataFim).isAfter(moment()) // Verifica se a data de fim é futura
+          (evento: Evento) => moment(evento.dataEvento).isAfter(moment()) // Verifica se a data de fim é futura
         )
         .sort(
-          (a: Evento, b: Evento) => moment(a.dataFim).diff(moment(b.dataFim)) // Ordena por data de início
+          (a: Evento, b: Evento) =>
+            moment(a.dataInicio).diff(moment(b.dataEvento)) // Ordena por data de início
         );
 
       // Atualiza o estado com eventos futuros
@@ -101,10 +102,16 @@ export default function FutureEvents() {
                 </h3>
                 <p className="text-gray-700">{evento.descricao}</p>
                 <p className="mt-2">
-                  <strong>Início:</strong> {formataData(evento.dataInicio)}
+                  <strong>Início das Inscrições:</strong>{" "}
+                  {formataData(evento.dataInicio)}
                 </p>
                 <p>
-                  <strong>Fim:</strong> {formataData(evento.dataFim)}
+                  <strong>Fim das Inscrições:</strong>{" "}
+                  {formataData(evento.dataFim)}
+                </p>
+                <p>
+                  <strong>Data do Evento:</strong>{" "}
+                  {formataData(evento.dataEvento)}
                 </p>
                 <p>
                   <strong>Vagas:</strong> {evento.vagas}

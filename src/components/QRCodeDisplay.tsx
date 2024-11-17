@@ -1,5 +1,5 @@
 import React from "react";
-
+import Timer from "@/components/Timer";
 interface QRCodeDisplayProps {
   qrCode: string;
 }
@@ -18,6 +18,7 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({ qrCode }) => {
       <p className="text-center">
         Escaneie o QR Code para validar sua presença!
       </p>
+      <Timer />
     </div>
   );
 };

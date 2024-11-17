@@ -70,10 +70,13 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
         <strong>Descrição:</strong> {evento.descricao}
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Data de Início:</strong> {formataData(evento.dataInicio)}
+        <strong>Início das Inscrições:</strong> {formataData(evento.dataInicio)}
       </p>
       <p className="text-gray-700 mb-2">
-        <strong>Data de Fim:</strong> {formataData(evento.dataFim)}
+        <strong>Fim das Inscrições:</strong> {formataData(evento.dataFim)}
+      </p>
+      <p className="text-gray-700 mb-2">
+        <strong>Data do Evento:</strong> {formataData(evento.dataEvento)}
       </p>
       <p className="text-gray-700 mb-2">
         <strong>Vagas Disponíveis:</strong> {evento.vagas}
