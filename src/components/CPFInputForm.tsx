@@ -1,20 +1,16 @@
-"use client";
-
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Sucesso, Erro } from "./Mensagens";
+import InputMask from "react-input-mask";
+import { SucessoTimerAlerta, ErroAlerta } from "./Mensagem";
 
 const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
   const [cpf, setCpf] = useState("");
-  const [mensagem, setMensagem] = useState<{
-    success?: string;
-    error?: string;
-  } | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setMensagem(null); // Limpa mensagens anteriores
+
+    const cpfSemMascara = cpf.replace(/\D/g, "");
 
     try {
       const response = await fetch("/api/event/validar-presenca", {
@@ -22,22 +18,19 @@ const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ cpf, token }),
+        body: JSON.stringify({ cpf: cpfSemMascara, token }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMensagem({ success: data.success });
-        setTimeout(() => {
-          router.push("/"); // Redireciona após 2 segundos
-        }, 2000);
+        SucessoTimerAlerta("Presença validada com sucesso!", "/", router);
       } else {
-        setMensagem({ error: data.error });
+        ErroAlerta("Algo deu errado!", data.error);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao validar presença:", error);
-      setMensagem({ error: "Ocorreu um erro ao validar a presença." });
+      ErroAlerta("Erro no servidor", error);
     }
   };
 
@@ -49,8 +42,8 @@ const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <label className="block text-sm font-medium">CPF:</label>
-          <input
-            type="text"
+          <InputMask
+            mask="999.999.999-99" // Máscara para CPF
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
             placeholder="Digite seu CPF"
@@ -64,8 +57,6 @@ const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
             Validar Presença
           </button>
         </form>
-        {mensagem?.success && <Sucesso mensagem={mensagem.success} />}
-        {mensagem?.error && <Erro mensagem={mensagem.error} />}
       </div>
     </div>
   );

@@ -31,6 +31,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-input-mask": "^2.0.4",
+    "sweetalert2": "^11.14.5",
+    "sweetalert2-react-content": "^5.0.7",
     "yup": "^1.4.0"
   },
   "devDependencies": {

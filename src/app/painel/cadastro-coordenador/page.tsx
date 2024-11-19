@@ -4,6 +4,7 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { Coordenador, coordenadorSchema } from "@/utils/coordenadorSchema";
 import { useRouter } from "next/navigation";
+import { ErroAlerta, SucessoAlerta } from "@/components/Mensagem";
 
 const RegistroCoordenador: React.FC = () => {
   const validationSchema = coordenadorSchema;
@@ -31,15 +32,12 @@ const RegistroCoordenador: React.FC = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setStatus({ success: "Coordenador criado com sucesso!" });
-        setTimeout(() => {
-          router.push("/painel");
-        }, 3000); // Aumenta o tempo de espera
+        SucessoAlerta("Coordenador criado com sucesso!", "/painel", router);
       } else {
-        setStatus({ error: result.message || "Erro ao criar coordenador." });
+        ErroAlerta("Erro ao criar coordenador.", result.error);
       }
-    } catch (error) {
-      setStatus({ error: "Erro de comunicação com o servidor." });
+    } catch (error: any) {
+      ErroAlerta("Erro de comunicação com o servidor.", error);
     } finally {
       setSubmitting(false);
     }

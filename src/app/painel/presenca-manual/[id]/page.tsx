@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { buscaCpfEInscricao } from "@/lib/actions";
+import { SucessoAlerta, ErroAlerta } from "@/components/Mensagem";
 interface PageProps {
   params: {
     id: string;
@@ -10,7 +11,6 @@ export default function Presenca({ params }: PageProps) {
   const [cpf, setCpf] = useState("");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [statusMessage, setStatusMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const eventoId = params.id;
 
@@ -30,7 +30,7 @@ export default function Presenca({ params }: PageProps) {
     e.preventDefault();
 
     if (!cpf || !nome || !email || !eventoId) {
-      setStatusMessage("Por favor, preencha todos os campos.");
+      ErroAlerta("Por favor, preencha todos os campos.");
       return;
     }
 
@@ -47,15 +47,15 @@ export default function Presenca({ params }: PageProps) {
       const data = await response.json();
 
       if (response.ok) {
-        setStatusMessage("Presença registrada com sucesso!");
+        SucessoAlerta("Presença registrada com sucesso!");
         setCpf("");
         setEmail("");
         setNome("");
       } else {
-        setStatusMessage(data.error || "Erro ao registrar presença.");
+        ErroAlerta("Erro ao registrar presença.", data.error);
       }
-    } catch (error) {
-      setStatusMessage("Ocorreu um erro ao registrar a presença.");
+    } catch (error: any) {
+      ErroAlerta("Ocorreu um erro no servidor.", error);
     } finally {
       setLoading(false);
     }
@@ -141,12 +141,6 @@ export default function Presenca({ params }: PageProps) {
             {loading ? "Registrando..." : "Inserir Presença"}
           </button>
         </form>
-
-        {statusMessage && (
-          <p className="mt-4 text-lg font-semibold text-red-600">
-            {statusMessage}
-          </p>
-        )}
       </div>
     </main>
   );

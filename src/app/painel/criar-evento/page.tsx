@@ -3,14 +3,11 @@
 import { Evento } from "@/utils/eventoSchema";
 import EventoForm from "@/components/EventoForm";
 import { useRouter } from "next/navigation";
-
+import { SucessoAlerta, ErroAlerta } from "@/components/Mensagem";
 export default function Page() {
   const uid = localStorage.getItem("uid");
   const router = useRouter();
-  const handleSubmit = async (
-    values: Evento,
-    { setSubmitting, setStatus }: any
-  ) => {
+  const handleSubmit = async (values: Evento, { setSubmitting }: any) => {
     try {
       const valoresConvertidos = {
         ...values,
@@ -29,15 +26,16 @@ export default function Page() {
       const result = await response.json();
 
       if (response.ok) {
-        setStatus({ success: "Evento criado com sucesso!" });
-        setTimeout(() => {
-          router.push("/painel");
-        }, 3000); // Aumenta o tempo de espera
+        SucessoAlerta(
+          "Evento criado com sucesso!",
+          `/painel/evento/${result.eventoId}`,
+          router
+        );
       } else {
-        setStatus({ error: result.message || "Erro ao criar evento!" });
+        ErroAlerta("Erro ao criar o evento", result.message);
       }
-    } catch (error) {
-      setStatus({ error: "Erro de comunicação com o servidor!" });
+    } catch (error: any) {
+      ErroAlerta("Erro de comunicação com o servidor!", error);
     } finally {
       setSubmitting(false);
     }

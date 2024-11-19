@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { obterEventoPorId, atualizarEvento } from "@/lib/actions";
+import { ErroAlerta, SucessoAlerta } from "@/components/Mensagem";
 
 interface EditarEventoPageProps {
   params: {
@@ -20,7 +21,6 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
   const [dataEvento, setDataEvento] = useState<string>("");
   const [horas, setHoras] = useState<number>(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null); // Para mensagens de erro
   const router = useRouter();
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
         }
       } catch (err) {
         console.error("Erro ao buscar evento:", err);
-        setError("Erro ao buscar evento.");
+        ErroAlerta("Erro ao buscar evento.");
       }
       setLoading(false);
     };
@@ -62,10 +62,14 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
         dataEvento,
         horas,
       });
-      router.push(`/painel/evento/${params.id}`); // Redireciona após atualização
-    } catch (error) {
+      SucessoAlerta(
+        "Evento editado com sucesso!",
+        `/painel/evento/${params.id}`,
+        router
+      );
+    } catch (error: any) {
       console.error("Erro ao atualizar evento:", error);
-      setError("Erro ao atualizar evento."); // Mensagem de erro
+      ErroAlerta("Erro no servidor.", error);
     }
   };
 
@@ -76,8 +80,6 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-semibold mb-4">Editar Evento</h1>
-      {error && <p className="text-red-500">{error}</p>}{" "}
-      {/* Exibe mensagens de erro */}
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <label className="block text-gray-700">Nome do Evento</label>

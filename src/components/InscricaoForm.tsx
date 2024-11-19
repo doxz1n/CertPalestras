@@ -4,7 +4,7 @@ import { useState } from "react";
 import InputMask from "react-input-mask"; // Importa o InputMask
 import { buscaCpfEInscricao } from "../lib/actions";
 import { useRouter } from "next/navigation";
-import { Sucesso, Erro } from "./Mensagens";
+import { ErroAlerta, SucessoAlerta } from "./Mensagem";
 
 interface InscricaoFormProps {
   eventoId: string;
@@ -20,8 +20,6 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
   const [nomeConfirmacao, setNomeConfirmacao] = useState("");
   const [email, setEmail] = useState("");
   const [emailConfirmacao, setEmailConfirmacao] = useState("");
-  const [mensagem, setMensagem] = useState("");
-  const [sucesso, setSucesso] = useState(false);
   const [cpfErro, setCpfErro] = useState("");
   const [nomeErro, setNomeErro] = useState("");
   const [emailErro, setEmailErro] = useState("");
@@ -86,7 +84,7 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
 
       // Validações para CPF e email de novos usuários
       if (email === "" || nome === "") {
-        setMensagem("Preencha todos os campos do formulário.");
+        ErroAlerta("Preencha todos os campos do formulário.");
         setLoading(false);
         return;
       }
@@ -109,29 +107,24 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
       });
 
       if (response.ok) {
-        setMensagem(
+        onSuccess();
+        SucessoAlerta(
           existeCpf
             ? "Inscrição realizada com sucesso!"
-            : "Usuário cadastrado e inscrição realizada com sucesso!"
+            : "Usuário cadastrado e inscrição realizada com sucesso!",
+          "/",
+          router
         );
-        setSucesso(true);
-        // Espera 3 segundos para exibir a mensagem antes de redirecionar
-        setTimeout(() => {
-          onSuccess(); // Invoca a função onSuccess para notificar o sucesso
-          router.push("/");
-        }, 3000); // Aumenta o tempo de espera
       } else {
-        setMensagem(
+        ErroAlerta(
           existeCpf
             ? "Erro ao realizar inscrição"
             : "Erro ao cadastrar usuário e realizar inscrição"
         );
-        setSucesso(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao inscrever:", error);
-      setMensagem("Erro ao realizar a inscrição.");
-      setSucesso(false);
+      ErroAlerta("Ocorreu um erro ao se inscrever", error);
     } finally {
       setLoading(false);
     }
@@ -154,8 +147,6 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
               setExisteCpf(false);
               setNome("");
               setEmail("");
-              setJaInscrito(false);
-              setMensagem("");
             }}
             onBlur={handleBlurCpf}
             placeholder="Digite seu CPF"
@@ -304,15 +295,6 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
         >
           {loading ? "Processando..." : "Inscrever"}
         </button>
-        {mensagem && (
-          <>
-            {sucesso ? (
-              <Sucesso mensagem={mensagem} />
-            ) : (
-              <Erro mensagem={mensagem} />
-            )}
-          </>
-        )}
       </div>
     </div>
   );

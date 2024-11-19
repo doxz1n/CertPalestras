@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(
-      { message: "Evento criado com sucesso!" },
+      { message: "Evento criado com sucesso!", eventoId: eventoRef.id },
       { status: 200 }
     );
   } catch (error) {

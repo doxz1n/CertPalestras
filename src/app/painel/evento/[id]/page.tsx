@@ -7,7 +7,7 @@ import {
   excluirEventoPorId,
   formataData,
 } from "@/lib/actions";
-import { formatWithOptions } from "util";
+import { DeletarAlerta } from "@/components/Mensagem";
 
 interface EventoPageProps {
   params: {
@@ -15,12 +15,9 @@ interface EventoPageProps {
   };
 }
 
-const dateFormat = "DD/MM/YYYY HH:mm";
-
 const EventoDetalhes = ({ params }: EventoPageProps) => {
   const [evento, setEvento] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false); // estado para confirmar exclusão
   const router = useRouter();
 
   useEffect(() => {
@@ -41,14 +38,6 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
     } catch (error) {
       console.error("Erro ao excluir evento:", error);
     }
-  };
-
-  const openDeleteConfirmation = () => {
-    setIsDeleteConfirmOpen(true);
-  };
-
-  const closeDeleteConfirmation = () => {
-    setIsDeleteConfirmOpen(false);
   };
 
   if (loading) {
@@ -104,58 +93,35 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
       <div className="mt-6 flex space-x-4">
         <button
           onClick={() => router.push(`/painel/editar-evento/${params.id}`)}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-cyan-700"
         >
           Editar
         </button>
         <button
-          className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition duration-200"
+          className="bg-sky-500 text-white px-4 py-2 rounded-lg hover:bg-sky-700 transition duration-200 outline-dashed outline-2 outline-offset-2 outline-sky-800"
           onClick={() => router.push(`/painel/qr/${params.id}`)}
         >
           Gerar QR
         </button>
         <button
-          className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition duration-200"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition duration-200"
           onClick={() => router.push(`/painel/presenca-manual/${params.id}`)}
         >
           Presença Manual
         </button>
         <button
-          className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition duration-200"
+          className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition duration-200 outline-dashed outline-2 outline-offset-2 outline-indigo-800"
           onClick={() => router.push(`/api/emission?id=${params.id}`)}
         >
           Gerar Certificados
         </button>
         <button
-          onClick={openDeleteConfirmation}
+          onClick={() => DeletarAlerta(handleDelete)}
           className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
         >
           Excluir
         </button>
       </div>
-
-      {/* Modal de confirmação de exclusão */}
-      {isDeleteConfirmOpen && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p>Tem certeza que deseja excluir este evento?</p>
-            <div className="mt-4 flex justify-end space-x-4">
-              <button
-                onClick={handleDelete}
-                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-              >
-                Confirmar
-              </button>
-              <button
-                onClick={closeDeleteConfirmation}
-                className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
