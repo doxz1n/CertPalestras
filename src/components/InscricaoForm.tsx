@@ -4,6 +4,7 @@ import { useState } from "react";
 import InputMask from "react-input-mask"; // Importa o InputMask
 import { buscaCpfEInscricao } from "../lib/actions";
 import { useRouter } from "next/navigation";
+import { Sucesso, Erro } from "./Mensagens";
 
 interface InscricaoFormProps {
   eventoId: string;
@@ -20,6 +21,7 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
   const [email, setEmail] = useState("");
   const [emailConfirmacao, setEmailConfirmacao] = useState("");
   const [mensagem, setMensagem] = useState("");
+  const [sucesso, setSucesso] = useState(false);
   const [cpfErro, setCpfErro] = useState("");
   const [nomeErro, setNomeErro] = useState("");
   const [emailErro, setEmailErro] = useState("");
@@ -112,6 +114,7 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
             ? "Inscrição realizada com sucesso!"
             : "Usuário cadastrado e inscrição realizada com sucesso!"
         );
+        setSucesso(true);
         // Espera 3 segundos para exibir a mensagem antes de redirecionar
         setTimeout(() => {
           onSuccess(); // Invoca a função onSuccess para notificar o sucesso
@@ -123,10 +126,12 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
             ? "Erro ao realizar inscrição"
             : "Erro ao cadastrar usuário e realizar inscrição"
         );
+        setSucesso(false);
       }
     } catch (error) {
       console.error("Erro ao inscrever:", error);
       setMensagem("Erro ao realizar a inscrição.");
+      setSucesso(false);
     } finally {
       setLoading(false);
     }
@@ -300,15 +305,13 @@ const InscricaoForm = ({ eventoId, onSuccess }: InscricaoFormProps) => {
           {loading ? "Processando..." : "Inscrever"}
         </button>
         {mensagem && (
-          <div
-            className={`mt-4 p-2 border-l-4 ${
-              mensagem.includes("sucesso")
-                ? "bg-green-100 border-green-500 text-green-900"
-                : "bg-red-100 border-red-500 text-red-900"
-            }`}
-          >
-            {mensagem}
-          </div>
+          <>
+            {sucesso ? (
+              <Sucesso mensagem={mensagem} />
+            ) : (
+              <Erro mensagem={mensagem} />
+            )}
+          </>
         )}
       </div>
     </div>

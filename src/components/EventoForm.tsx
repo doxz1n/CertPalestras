@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import eventoSchema, { Evento } from "@/utils/eventoSchema";
-
+import { Sucesso, Erro } from "./Mensagens";
 interface EventoFormProps {
   onSubmit: (
     values: Evento,
@@ -147,16 +147,8 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
             />
           </div>
 
-          {status && status.success && (
-            <div className="mt-4 p-2 border-l-4 bg-green-100 border-green-500 text-green-900">
-              {status.success}
-            </div>
-          )}
-          {status && status.error && (
-            <div className="mt-4 p-2 border-l-4 bg-red-100 border-red-500 text-red-900">
-              {status.error}
-            </div>
-          )}
+          {status && status.success && <Sucesso mensagem={status.success} />}
+          {status && status.error && <Erro mensagem={status.error} />}
 
           <div>
             <button

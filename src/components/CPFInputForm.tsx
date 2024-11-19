@@ -1,14 +1,21 @@
 "use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Sucesso, Erro } from "./Mensagens";
 
 const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
   const [cpf, setCpf] = useState("");
-  const [mensagem, setMensagem] = useState<string | null>(null);
+  const [mensagem, setMensagem] = useState<{
+    success?: string;
+    error?: string;
+  } | null>(null);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setMensagem(null); // Limpa mensagens anteriores
+
     try {
       const response = await fetch("/api/event/validar-presenca", {
         method: "POST",
@@ -17,20 +24,20 @@ const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
         },
         body: JSON.stringify({ cpf, token }),
       });
-      const data = await response.json();
-      if (response.ok) {
-        setMensagem(data.success);
-      } else {
-        setMensagem(data.error);
-      }
 
-      // Redireciona após 2 segundos
-      setTimeout(() => {
-        router.push("/"); // Redireciona para a página inicial
-      }, 2000);
+      const data = await response.json();
+
+      if (response.ok) {
+        setMensagem({ success: data.success });
+        setTimeout(() => {
+          router.push("/"); // Redireciona após 2 segundos
+        }, 2000);
+      } else {
+        setMensagem({ error: data.error });
+      }
     } catch (error) {
       console.error("Erro ao validar presença:", error);
-      setMensagem("Ocorreu um erro ao validar a presença.");
+      setMensagem({ error: "Ocorreu um erro ao validar a presença." });
     }
   };
 
@@ -57,7 +64,8 @@ const CPFInputForm: React.FC<{ token: string }> = ({ token }) => {
             Validar Presença
           </button>
         </form>
-        {mensagem && <p className="mt-4 text-center">{mensagem}</p>}
+        {mensagem?.success && <Sucesso mensagem={mensagem.success} />}
+        {mensagem?.error && <Erro mensagem={mensagem.error} />}
       </div>
     </div>
   );
