@@ -17,6 +17,14 @@ async function fetchDocument<T>(ref: any): Promise<T | null> {
   return docSnapshot.exists() ? (docSnapshot.data() as T) : null;
 }
 
+function formatarNomeArquivo(input: string): string {
+  return input
+    .normalize("NFD") // Decompor caracteres em sua forma base
+    .replace(/[\u0300-\u036f]/g, "") // Remover marcas diacríticas (acentos)
+    .replace(/ç/g, "c")
+    .replace(/[^a-zA-Z0-9]/g, "_"); // Substituir espaços e caracteres especiais por '_'
+}
+
 interface EventoInfo {
   nomeEvento: string;
   dataEvento: string;
@@ -128,10 +136,8 @@ export async function GET(request: Request) {
           );
 
           if (isPresent) {
-            const fileName = `${nomeEvento}_${alunoData.nome.replace(
-              /[^a-zA-Z0-9]/g,
-              "_"
-            )}.docx`;
+            const fileName =
+              formatarNomeArquivo(`${nomeEvento}_${alunoData.nome}`) + ".docx";
             await processAlunoCertificado(
               alunoData,
               eventoInfo,
@@ -160,7 +166,9 @@ export async function GET(request: Request) {
     return new NextResponse(zipContent, {
       headers: {
         "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="${nomeEvento}_certificados.zip"`,
+        "Content-Disposition": `attachment; filename="${formatarNomeArquivo(
+          nomeEvento
+        )}_certificados.zip"`,
       },
     });
   } catch (error) {
