@@ -11,6 +11,7 @@ import { DeletarAlerta } from "@/components/Mensagem";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { formatarNomeArquivo } from "@/lib/actions";
+import Voltar from "@/components/Voltar";
 
 interface EventoPageProps {
   params: {
@@ -96,6 +97,7 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
 
   return (
     <div className="p-4 sm:p-6 bg-white shadow-md rounded-lg">
+      <Voltar />
       <h1 className="text-2xl font-semibold mb-4">{evento.nome}</h1>
       <p className="text-gray-700 mb-2">
         <strong>Descrição:</strong> {evento.descricao}

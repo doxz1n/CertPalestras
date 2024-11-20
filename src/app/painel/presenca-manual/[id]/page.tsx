@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { buscaCpfEInscricao } from "@/lib/actions";
 import { SucessoAlerta, ErroAlerta } from "@/components/Mensagem";
+import Voltar from "@/components/Voltar";
 interface PageProps {
   params: {
     id: string;
@@ -63,6 +64,7 @@ export default function Presenca({ params }: PageProps) {
 
   return (
     <main className="flex-grow container mx-auto p-6">
+      <Voltar />
       <div className="bg-white shadow-md rounded-lg p-6">
         <h1 className="text-3xl font-bold text-blue-900 mb-6">
           Inserir Presença
