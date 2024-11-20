@@ -7,7 +7,7 @@ import { Evento } from "@/utils/eventoSchema";
 import { Aluno } from "@/utils/alunoSchema";
 import { Coordenador } from "@/utils/coordenadorSchema";
 import InputMask from "react-input-mask";
-import { formataData } from "@/lib/actions";
+import { formataData, formatarNomeArquivo } from "@/lib/actions";
 
 const dateFormat = "DD/MM/YYYY HH:mm";
 const CHUNK_SIZE = 5;
@@ -15,14 +15,6 @@ const CHUNK_SIZE = 5;
 async function fetchDocument<T>(ref: any): Promise<T | null> {
   const docSnapshot = await getDoc(ref);
   return docSnapshot.exists() ? (docSnapshot.data() as T) : null;
-}
-
-function formatarNomeArquivo(input: string): string {
-  return input
-    .normalize("NFD") // Decompor caracteres em sua forma base
-    .replace(/[\u0300-\u036f]/g, "") // Remover marcas diacríticas (acentos)
-    .replace(/ç/g, "c")
-    .replace(/[^a-zA-Z0-9]/g, "_"); // Substituir espaços e caracteres especiais por '_'
 }
 
 interface EventoInfo {
