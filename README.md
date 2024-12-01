@@ -4,7 +4,7 @@ Projeto de conclusão de curso realizado por Celso Machado, Henrique Sanchez e W
 
 ## Descrição
 
-CertPalestras é uma aplicação de gerenciamento de envetos, presença e emissão de certificados construída com Next.js, Firebase. Este projeto permite aos organizadores de evento controlarem a quantidade de inscrições, a participação e no final emitirem certificados de participação.
+CertPalestras é uma aplicação de gerenciamento presença e emissão de certificados em eventos construída com Next.js, Firebase. Este projeto permite aos organizadores de evento controlarem a quantidade de inscrições, a participação e no final emitirem certificados de participação.
 
 ## Instalação e Configuração
 
@@ -24,7 +24,15 @@ CertPalestras é uma aplicação de gerenciamento de envetos, presença e emiss�
 3. Crie um arquivo .env.local na raiz do projeto e adicione as seguintes variáveis:
 
 ```
-    PENDENTE
+    API_KEY=
+   AUTH_DOMAIN=
+   PROJECT_ID=
+   STORAGE_BUCKET=
+   MESSAGING_SENDER_ID=
+   APP_ID=
+   MEASUREMENT_ID=G-
+   JWT_SECRET=
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 4. Inicie o servidor:
@@ -32,8 +40,6 @@ CertPalestras é uma aplicação de gerenciamento de envetos, presença e emiss�
 ```
    npm run dev
 ```
-
-## Uso
 
 ## Contato
 
