@@ -76,7 +76,7 @@ export default function ConsultaEventos() {
                 <strong>Descrição:</strong> {evento.descricao}
               </p>
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200"
                 onClick={() => handleConsulta(evento.id)}
               >
                 Mais detalhes

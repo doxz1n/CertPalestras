@@ -3,6 +3,7 @@
 import { Evento } from "@/utils/eventoSchema";
 import EventoForm from "@/components/EventoForm";
 import { useRouter } from "next/navigation";
+import Voltar from "@/components/Voltar";
 import { SucessoAlerta, ErroAlerta } from "@/components/Mensagem";
 export default function Page() {
   const uid = localStorage.getItem("uid");
@@ -42,13 +43,10 @@ export default function Page() {
   };
 
   return (
-    <main className="flex-grow flex justify-center items-center p-4">
-      <div className="bg-blue-900 p-8 rounded-lg shadow-lg w-full max-w-md text-white">
-        <h2 className="text-2xl font-semibold text-center mb-6">
-          Criação de Evento
-        </h2>
-        <EventoForm onSubmit={handleSubmit} />
-      </div>
-    </main>
+    <div className="p-6 bg-white shadow-md rounded-lg">
+      <Voltar />
+      <h1 className="text-2xl font-semibold mb-4">Criação de Evento</h1>
+      <EventoForm onSubmit={handleSubmit} />
+    </div>
   );
 }

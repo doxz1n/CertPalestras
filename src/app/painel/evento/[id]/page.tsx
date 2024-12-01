@@ -8,12 +8,17 @@ import {
   formataData,
 } from "@/lib/actions";
 import { DeletarAlerta } from "@/components/Mensagem";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { formatarNomeArquivo } from "@/lib/actions";
+import Voltar from "@/components/Voltar";
 
 interface EventoPageProps {
   params: {
     id: string;
   };
 }
+const MySwal = withReactContent(Swal);
 
 const EventoDetalhes = ({ params }: EventoPageProps) => {
   const [evento, setEvento] = useState<any>(null);
@@ -40,6 +45,44 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
     }
   };
 
+  const handleCertificados = async () => {
+    MySwal.fire({
+      title: "Gerando certificados...",
+      html: "Por favor, aguarde enquanto os certificados são gerados.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      const response = await fetch(`/api/emission?id=${params.id}`);
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${formatarNomeArquivo(evento.nome)}_certificados.zip`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+
+        MySwal.fire({
+          icon: "success",
+          title: "Certificados gerados com sucesso!",
+          confirmButtonText: "OK",
+        });
+      } else {
+        throw new Error(response.statusText);
+      }
+    } catch (error) {
+      MySwal.fire({
+        icon: "error",
+        title: "Erro ao gerar certificados",
+        text: "Houve um problema ao gerar os certificados. Tente novamente mais tarde.",
+      });
+    }
+  };
+
   if (loading) {
     return <p className="text-center text-gray-500">Carregando evento...</p>;
   }
@@ -54,6 +97,7 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
 
   return (
     <div className="p-4 sm:p-6 bg-white shadow-md rounded-lg">
+      <Voltar />
       <h1 className="text-2xl font-semibold mb-4">{evento.nome}</h1>
       <p className="text-gray-700 mb-2">
         <strong>Descrição:</strong> {evento.descricao}
@@ -111,7 +155,7 @@ const EventoDetalhes = ({ params }: EventoPageProps) => {
         </button>
         <button
           className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600 transition duration-200 outline-dashed outline-2 outline-offset-2 outline-indigo-800"
-          onClick={() => router.push(`/api/emission?id=${params.id}`)}
+          onClick={handleCertificados}
         >
           Gerar Certificados
         </button>

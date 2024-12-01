@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { obterEventoPorId, atualizarEvento } from "@/lib/actions";
 import { ErroAlerta, SucessoAlerta } from "@/components/Mensagem";
+import Voltar from "@/components/Voltar";
 
 interface EditarEventoPageProps {
   params: {
@@ -79,6 +80,7 @@ const EditarEvento = ({ params }: EditarEventoPageProps) => {
 
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
+      <Voltar />
       <h1 className="text-2xl font-semibold mb-4">Editar Evento</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

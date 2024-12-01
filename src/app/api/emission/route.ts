@@ -7,7 +7,7 @@ import { Evento } from "@/utils/eventoSchema";
 import { Aluno } from "@/utils/alunoSchema";
 import { Coordenador } from "@/utils/coordenadorSchema";
 import InputMask from "react-input-mask";
-import { formataData } from "@/lib/actions";
+import { formataData, formatarNomeArquivo } from "@/lib/actions";
 
 const dateFormat = "DD/MM/YYYY HH:mm";
 const CHUNK_SIZE = 5;
@@ -128,10 +128,8 @@ export async function GET(request: Request) {
           );
 
           if (isPresent) {
-            const fileName = `${nomeEvento}_${alunoData.nome.replace(
-              /[^a-zA-Z0-9]/g,
-              "_"
-            )}.docx`;
+            const fileName =
+              formatarNomeArquivo(`${nomeEvento}_${alunoData.nome}`) + ".docx";
             await processAlunoCertificado(
               alunoData,
               eventoInfo,
@@ -160,7 +158,9 @@ export async function GET(request: Request) {
     return new NextResponse(zipContent, {
       headers: {
         "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="${nomeEvento}_certificados.zip"`,
+        "Content-Disposition": `attachment; filename="${formatarNomeArquivo(
+          nomeEvento
+        )}_certificados.zip"`,
       },
     });
   } catch (error) {

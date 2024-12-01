@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import QRCodeDisplay from "@/components/QRCodeDisplay";
+import Voltar from "@/components/Voltar";
 interface PageProps {
   params: {
     id: string;
@@ -42,6 +43,7 @@ const Home = ({ params }: PageProps) => {
 
   return (
     <div style={{ textAlign: "center" }}>
+      <Voltar />
       {error && <p style={{ color: "red" }}>{error}</p>}{" "}
       {qrCode && <QRCodeDisplay qrCode={qrCode} />}
     </div>

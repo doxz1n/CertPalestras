@@ -107,3 +107,11 @@ export function obterFusoHorarioDoUsuario(): string {
 export function formataData(data: string): string {
   return moment(data).format("DD/MM/YYYY HH:mm");
 }
+
+export function formatarNomeArquivo(input: string): string {
+  return input
+    .normalize("NFD") // Decompor caracteres em sua forma base
+    .replace(/[\u0300-\u036f]/g, "") // Remover marcas diacríticas (acentos)
+    .replace(/ç/g, "c")
+    .replace(/[^a-zA-Z0-9]/g, "_"); // Substituir espaços e caracteres especiais por '_'
+}

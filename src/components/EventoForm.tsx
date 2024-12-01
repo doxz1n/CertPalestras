@@ -27,15 +27,15 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
     >
       {({ isSubmitting, status }) => (
         <Form className="space-y-6">
-          <div>
-            <label htmlFor="nome" className="block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="nome" className="block text-gray-700">
               Nome do Evento
             </label>
             <Field
               id="nome"
               name="nome"
               type="text"
-              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg"
             />
             <ErrorMessage
               name="nome"
@@ -44,15 +44,15 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
             />
           </div>
 
-          <div>
-            <label htmlFor="vagas" className="block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="vagas" className="block text-gray-700">
               Vagas
             </label>
             <Field
               id="vagas"
               name="vagas"
               type="number"
-              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg"
             />
             <ErrorMessage
               name="vagas"
@@ -61,15 +61,15 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
             />
           </div>
 
-          <div>
-            <label htmlFor="dataInicio" className="block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="dataInicio" className="block text-gray-700">
               Início das Inscrições
             </label>
             <Field
               id="dataInicio"
               name="dataInicio"
               type="datetime-local"
-              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg"
             />
             <ErrorMessage
               name="dataInicio"
@@ -78,15 +78,15 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
             />
           </div>
 
-          <div>
-            <label htmlFor="dataFim" className="block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="dataFim" className="block text-gray-700">
               Fim das Inscriçoes
             </label>
             <Field
               id="dataFim"
               name="dataFim"
               type="datetime-local"
-              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg"
             />
             <ErrorMessage
               name="dataFim"
@@ -94,15 +94,15 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
               className="text-red-500 text-sm mt-1"
             />
           </div>
-          <div>
-            <label htmlFor="dataEvento" className="block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="dataEvento" className="block text-gray-700">
               Data do Evento
             </label>
             <Field
               id="dataEvento"
               name="dataEvento"
               type="datetime-local"
-              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg"
             />
             <ErrorMessage
               name="dataEvento"
@@ -111,15 +111,15 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
             />
           </div>
 
-          <div>
-            <label htmlFor="horas" className="block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="horas" className="block text-gray-700">
               Horas do Certificado
             </label>
             <Field
               id="horas"
               name="horas"
               type="number"
-              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg"
               placeholder="Quantidade de horas para o certificado"
             />
             <ErrorMessage
@@ -129,15 +129,15 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
             />
           </div>
 
-          <div>
-            <label htmlFor="descricao" className="block text-sm font-medium">
+          <div className="mb-4">
+            <label htmlFor="descricao" className="block text-gray-700">
               Descrição
             </label>
             <Field
               id="descricao"
               name="descricao"
               as="textarea"
-              className="mt-1 p-3 block w-full border bg-gray-900 border-gray-700 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg resize-none"
               rows={4}
             />
             <ErrorMessage
@@ -149,7 +149,7 @@ const EventoForm: React.FC<EventoFormProps> = ({ onSubmit }) => {
           <div>
             <button
               type="submit"
-              className="w-full bg-red-500 text-white py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
               disabled={isSubmitting}
             >
               Criar Evento
